@@ -1,0 +1,104 @@
+<div class="content">
+    <div class="app-227">
+      <h4 class="title-app">Danh sách phiếu đề nghị VT LK</h4>
+      <div class="row filter-ds">
+        <form class="form-inline" (submit)="submitSearch($event)">
+          <div class="form-group">
+            <label class="" for="startDate">Từ ngày</label>
+            <input id="startDate" type="text"  class="input-write " [bsConfig]="bsConfig"  bsDatepicker  bsDatepicker [(bsValue)]="startDate" value="{{startDate | date: 'dd/MM/yyyy' }}" >
+            <div class="form-group">
+              <label class="" for="endDate">Đến ngày</label>
+              <input id="endDate" type="text"  class="input-write " [bsConfig]="bsConfig"  bsDatepicker  bsDatepicker [(bsValue)]="endDate" value="{{endDate | date: 'dd/MM/yyyy' }}" >
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select class="input-write" (change)="change_status($event.target.value)">
+              <option value="all"><b>All</b></option>
+              <option *ngFor="let item of statusArr"  value="{{item.id}}">{{item.text}}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-default">Lọc</button>
+        </form>
+      </div>
+
+      <table class="table table-condensed table-hover ng-scope">
+        <thead>
+        <tr>
+          <th>STT</th>
+          <th>Thời hạn cần VTLK</th>
+          <th>Ngày tạo phiếu</th>
+          <th>Lý do</th>
+          <th>Trạng thái</th>
+          <th>Người tạo phiếu</th>
+
+          <th>
+            <a *ngIf="tram_bao_hanh_id" (click)="OpenAddLK()" data-toggle="modal" data-target="#add_edit_lk">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr></thead>
+        <tbody>
+        <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of phieuDeNghi; let i = index" (dblclick)="openPDN(item.id)">
+          <td class="ng-binding">{{i+1}}</td>
+          <td class="ng-binding">{{item.thoi_han_can_vat_tu | date: 'dd/MM/yyyy'}}</td>
+          <td class="ng-binding">{{item.created_at | date: 'dd/MM/yyyy'}}</td>
+          <td class="ng-binding">{{item.ly_do?item.ly_do:item.phieu_sua_chua_id?'Bảo hành':''}}</td>
+          <td>{{status_phieu_de_nghi_lk[item.trang_thai]}}</td>
+          <td class="ng-binding">{{item.name}}</td>
+          <td class="ng-binding">
+            <a *ngIf="item.trang_thai != 2" data-toggle="modal" data-target="#delete_pdn" (click)="deleteIndex = i" ><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+              <!--<a *ngIf="item.trang_thai != 2" data-toggle="modal" data-target="#add_edit_lk" (click)="OpenAddLK();openDNEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>-->
+          </td>
+
+        </tr>
+
+        </tbody>
+      </table>
+
+      <ul class="pagination" *ngIf="total_page.length >1">
+        <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+        <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+        <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+      </ul>
+
+        <div class="modal fade" id="add_edit_lk" >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Phiếu đề nghị cấp vật tư</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <form>
+
+                        <div class="modal-body" *ngIf="editIndex">
+                            <app-dncvt *ngIf="openAddLK" (onEditItem)="phieuDeNghi[editIndex]=$event"  [de_nghi_id]="phieu_de_nghi_id" [tram_id]="tram_bao_hanh_id" ></app-dncvt>
+                        </div>
+                      <div class="modal-body" *ngIf="!editIndex">
+                        <app-dncvt *ngIf="openAddLK" (onNewItem)="phieuDeNghi.push($event)" [de_nghi_id]="phieu_de_nghi_id" [tram_id]="tram_bao_hanh_id" ></app-dncvt>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      <div class="modal fade" id="delete_pdn" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-body">
+              <p>Bạn có chắc muốn xóa phiếu đề nghị này không?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="onDeleteDNSubmit()">Yes</button>
+
+              <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>

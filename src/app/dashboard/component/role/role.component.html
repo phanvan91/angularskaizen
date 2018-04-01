@@ -1,0 +1,129 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Phân loại người dùng</h4>
+
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Loại người dùng</th>
+        <th>Diễn giải</th>
+        <th>
+          <a data-toggle="modal" data-target="#add_role">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+      <tr *ngFor="let item of loaiNguoiDungs; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.ten_loai }}</td>
+        <td>{{ item.dien_giai }}</td>
+        <td>
+          <a data-toggle="modal" data-target="#delete_role" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_role" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <!--<ul class="pagination">-->
+      <!--<li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">1</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">2</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">3</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">Next</a></li>-->
+    <!--</ul>-->
+    <!-- The Modal -->
+    <div class="modal fade" id="add_role">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm loại người dùng</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="createLoaiNguoiDungForm" (submit)="onCreate($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="id_role">Loại người dùng:</label>
+                <input type="text" class="form-control" id="id_role" formControlName="ten_loai">
+                <span  class="errors" *ngIf="createLoaiNguoiDungForm.get('ten_loai').invalid && createLoaiNguoiDungForm.get('ten_loai').touched">Vui lòng nhập loại người dùng</span>
+              </div>
+              <div class="form-group">
+                <label for="note_role">Diễn giải:</label>
+                <input type="text" class="form-control" id="note_role" formControlName="dien_giai">
+                <span  class="errors" *ngIf="createLoaiNguoiDungForm.get('dien_giai').invalid && createLoaiNguoiDungForm.get('dien_giai').touched">Vui lòng nhập diễn giải</span>
+              </div>
+
+            </div>
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_role">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa loại người dùng</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="editLoaiNguoiDungForm" (submit)="onUpdate($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="edit_id_role">Loại người dùng:</label>
+                <input type="text" class="form-control" id="edit_id_role" formControlName="ten_loai">
+                <span  class="errors" *ngIf="editLoaiNguoiDungForm.get('ten_loai').invalid && editLoaiNguoiDungForm.get('ten_loai').touched">Vui lòng nhập loại người dùng</span>
+              </div>
+              <div class="form-group">
+                <label for="edit_note_role">Diễn giải:</label>
+                <input type="text" class="form-control" id="edit_note_role" formControlName="dien_giai">
+                <span class="errors" *ngIf="editLoaiNguoiDungForm.get('dien_giai').invalid && editLoaiNguoiDungForm.get('dien_giai').touched">Vui lòng diễn giải</span>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_role" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onDelete()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,30 @@
+.content {
+  width: 100%;
+}
+.pagination{
+  float: right;
+}
+.app-227{
+  margin: 2%;
+}
+th, td{
+  position: relative;
+}
+.filter a{
+cursor: pointer;
+display: block;
+padding: 0px 10px;
+font-weight: 300;
+border-top: 1px solid #eee;
+}
+.filter a:hover, .filter a.active{
+  background-color: #eee;
+}
+.filter a.checked{
+  background-image: url('../../../../assets/images/checked.png');
+  background-repeat: no-repeat;
+  background-position: right;
+}
+.dropdown-menu.filter{
+  padding: 5px 0px;
+}

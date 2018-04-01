@@ -1,0 +1,864 @@
+<div class="content">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#thong_tin_dich_vu" role="tab">Thông tin dịch vụ</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#thong_tin_tiep_nhan" role="tab">Thông tin tiếp nhận</a>
+    </li>
+    <li *ngIf="visible" class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#thong_tin_bao_hanh" role="tab">Thông tin bảo hành</a>
+    </li>
+    <li *ngIf="visible" class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#tra_xac_linh_kien" role="tab">Trả xác linh kiện</a>
+    </li>
+    <li *ngIf="visible" class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#happy_call" role="tab">Happy Call</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link">Trạng thái phiếu: {{status_psc[trang_thai] }}</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <form [formGroup]="createPhieuSuaChuaForm" (submit)="onSubmit($event)" enctype="multipart/form-data">
+    <div class="tab-content">
+      <div class="tab-pane active" id="thong_tin_dich_vu" role="tabpanel">
+        <div class="row">
+
+          <div class="col-12">
+            <select2  [width]="300" [options]="options_serial" (valueChanged)="onChangeValue($event,'serial')">
+              <option *ngIf="serial" value="{{serial.id}}">{{serial.serial}}</option>
+              <option *ngIf="serial_ma" value="{{serial_ma}}">{{serial_ma}}</option>
+            </select2>
+            <app-serial-create *ngIf="init_add_serial" [serial_add]="serial_add"  (serialAdded)="serial=$event; " (customer)="customer=$event; "></app-serial-create>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div class="row table ttkh"   *ngIf="serial">
+          <div class="col-5 bold">THÔNG TIN SỐ SERIAL</div>
+          <div  class="col-7">
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#edit_serial" (click)="openEditSerial()">Chỉnh sửa serial</button>
+          </div>
+        </div>
+        <div class="row table ttkh"   *ngIf="serial">
+          <div class="col">
+            <div class="row">
+              <div class="col-5 bold"> Serial:</div>
+              <div class="col-7">  {{ serial.serial }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Model:</div>
+              <div class="col-7"> {{ serial.ten_model }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold"> Sản phẩm:</div>
+              <div class="col-7">{{ serial.ten_sp }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Ngành hàng:</div>
+              <div class="col-7">
+                {{ serial.ten_nganh }}
+              </div>
+
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col-5 bold">Ngày sản xuất:</div>
+              <div class="col-7">
+                  <span *ngIf=" serial.ngay_san_xuat">
+                       {{ serial.ngay_san_xuat | dateTime }}
+                  </span>
+
+
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold"> Ngày xuất kho:</div>
+              <div class="col-7">
+                   <span *ngIf=" serial.ngay_xuat_kho">
+                         {{ serial.ngay_xuat_kho | dateTime }}
+                   </span>
+
+
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Ngày kích hoạt BH:</div>
+              <div class="col-7">
+                   <span *ngIf=" serial.ngay_kich_hoat_bh">
+                        {{ serial.ngay_kich_hoat_bh | dateTime }}
+                   </span>
+
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Ngày hết hạn BH:</div>
+              <div class="col-7" *ngIf="serial.ngay_het_han | dateTime">
+                <span *ngIf="serial.het_han"  style="color: red;">
+                     <span *ngIf=" serial.ngay_het_han">
+                   {{ serial.ngay_het_han | dateTime }}
+                   </span>
+                </span>
+                <span *ngIf="!serial.het_han">
+                     <span *ngIf=" serial.ngay_het_han">
+                   {{ serial.ngay_het_han | dateTime }}
+                   </span>
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <app-serial-edit [data]="serial" *ngIf="openSerial" (serialEdit)="onSerialEdit($event)" (customer)="customer = $event;"></app-serial-edit>
+
+
+        <div class="row" *ngIf="serial">
+
+          <div class="col-12">
+            <select2 [width]="300" [options]="options_kh" (valueChanged)="onChangeValue($event,'khachhang')">
+              <option *ngIf="customer" value="{{customer.id}}">{{customer.ten}}</option>
+
+            </select2>
+            <app-add-customer *ngIf="init_add_customer" (khachHangAdded)="customer = $event"></app-add-customer>
+
+
+          </div>
+        </div>
+
+        <div class="row table ttkh"   *ngIf="customer">
+          <div class="col-5 bold">THÔNG TIN KHÁCH HÀNG</div>
+          <div  class="col-7">
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#edit_customer"  (click)="openEditCustomer()">Chỉnh sửa khách hàng</button>
+          </div>
+        </div>
+        <div class="row table ttkh"   *ngIf="customer">
+          <div class="col">
+            <div class="row">
+              <div class="col-5 bold">Tên:</div>
+              <div class="col-7"> {{ customer.ten }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Điện thoại:</div>
+              <div class="col-7"> {{ customer.dien_thoai }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Email:</div>
+              <div class="col-7"> {{ customer.email }}</div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Loại KH:</div>
+              <div class="col-7">
+                <span class="ng-binding" *ngIf="customer.loai==1;else other_content_loai">Khách lẻ</span>
+                <ng-template #other_content_loai>
+                  <span class="ng-binding">Khách sỉ</span>
+                </ng-template>
+              </div>
+
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col-5 bold">Tỉnh/Thành phố:</div>
+              <div class="col-7"> <span *ngIf="thanhPhos && (customer.tinh_tp) != null">
+                {{ thanhPhos[customer.tinh_tp].name }}
+              </span></div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Quận/huyện:</div>
+              <div class="col-7">
+                <span *ngIf="quans && (customer.quan_huyen) != null">
+                {{ quans[customer.quan_huyen].name }}
+              </span>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Phường xã:</div>
+              <div class="col-7"> <span *ngIf="villages &&(customer.phuong_xa) != null">
+                {{ villages[customer.phuong_xa].name }}
+              </span></div>
+
+            </div>
+            <div class="row">
+              <div class="col-5 bold">Địa chỉ:</div>
+              <div class="col-7">{{ customer.dia_chi }}</div>
+
+            </div>
+          </div>
+        </div>
+        <app-customer-edit *ngIf="customerModal" [data]="customer" (khachHangEdit)="customer=$event"></app-customer-edit>
+        <div class="btn-group">
+          <div class="form-group">
+            <button *ngIf="customer && serial" class="btn btn-primary" type="submit">
+              <span *ngIf="phieu_sua_chua_id">
+                 Lưu lại
+              </span>
+              <span *ngIf="!phieu_sua_chua_id">
+                 Tạo phiếu
+              </span>
+
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="tab-pane" id="thong_tin_tiep_nhan" role="tabpanel">
+        <div *ngIf="phieu_sua_chua_id;else other_content">
+        <div class="row">
+          <div class="col">
+            <table class="table">
+              <tr>
+                <td>Kênh tiếp nhận</td>
+                <td *ngIf="(kenh_tiep_nhan | json) != '{}'">
+                  <select formControlName="kenh_tiep_nhan">
+                    <option *ngFor="let item of kenh_tiep_nhan | keys" [value]="item.key">{{ item.value }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr *ngIf="phieu_nhap_kho_id">
+                <td >Mã phiếu nhập kho sửa chữa</td>
+                <td>
+                  {{phieu_nhap_kho_id}}
+                </td>
+              </tr>
+              <tr>
+                <td>Ưu tiên</td>
+                <td>
+                  <select formControlName="uu_tien">
+                    <option *ngFor="let item of uu_tien | keys" [value]="item.key">{{ item.value }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Loại dịch vụ</td>
+                <td>
+                  <select formControlName="loai_hinh_dv">
+                    <option *ngFor="let item of loai_hinh_dv | keys" [value]="item.key">{{ item.value }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Tình trạng hư hỏng</td>
+                <td>
+                  <div class="row">
+                    <div class="col-md-12" *ngIf="tinhTrangHuHongs.length">
+                      <ng-select  [allowClear]="true"
+                                  [items]="tinhTrangHuHongs"
+                                  [disabled]="0"
+                                  (selected)="selected($event)"
+                                  (removed)="removed($event)"
+                                  placeholder="Tìm kiếm"
+                      >
+                      </ng-select>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <span class="tthh-item" *ngFor="let item of createPhieuSuaChuaForm.controls.tinh_trang_hu_hongs.controls; let i = index">
+                    {{ '[' + item.get('ma').value + ']' + ' ' + item.get('mo_ta').value }}
+                    <i class="fa fa-times" aria-hidden="true" (click)="createPhieuSuaChuaForm.controls.tinh_trang_hu_hongs.removeAt(i)"></i>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div>Ghi chú</div>
+                  <textarea class="form-control" formControlName="ghi_chu"></textarea>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col">
+            <table class="table">
+              <tr>
+                <td>Người tiếp nhận</td>
+                <td>{{ user.name }}</td>
+              </tr>
+              <tr *ngIf="phieu_sua_chua">
+                <td>Nhân Viên Bảo Hành</td>
+                <td>
+                  <span *ngIf="phieu_sua_chua.nhan_vien_bao_hanh">
+                  {{ phieu_sua_chua.nhan_vien_bao_hanh }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>Ngày tiếp nhận</td>
+                <td>
+                  <input type="text"
+                         class="form-control date-picker"
+                         #dpTime="bsDatepicker"  bsDatepicker [(bsValue)]="dateShow"  />
+                  <span class="date" (click)="dpTime.toggle()">{{dateShow| date:'dd/MM/yyyy hh:mm'}}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Nơi thực hiện</td>
+                <td>
+                  <select formControlName="noi_thuc_hien">
+                    <option *ngFor="let item of noi_thuc_hien | keys" [value]="item.key">{{ item.value }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Trạm thực hiện</td>
+                <td>
+                  <select2 *ngIf="tramBaoHanhMap" [width]="130" [data]="tramBaoHanhs" [options]="options_tramBaoHanh" [value]="tram_bao_hanh_id" (valueChanged)="tramBaoHanhCreateEditValueChanged($event)">
+                      <option *ngIf="tramBaoHanhMap" value="{{tram_bao_hanh_id}}"> {{ tramBaoHanhMap}}</option>
+                  </select2>
+                  <select2 *ngIf="!tramBaoHanhMap" [width]="130" [data]="tramBaoHanhs" [options]="options_tramBaoHanh" [value]="tram_bao_hanh_id" (valueChanged)="tramBaoHanhCreateEditValueChanged($event)"></select2>
+
+                </td>
+              </tr>
+              <tr>
+                <td>Ngày hoàn tất mong muốn</td>
+                <td>
+                  <input type="text"
+                         class="form-control date-picker"
+                         #dpTime="bsDatepicker"  bsDatepicker
+                         [(bsValue)]="createPhieuSuaChuaForm.get('ngay_hoan_tat_mong_muon').value"
+                         formControlName="ngay_hoan_tat_mong_muon" />
+                  <span class="date" (click)="dpTime.toggle()">{{createPhieuSuaChuaForm.get('ngay_hoan_tat_mong_muon').value| date:'dd/MM/yyyy'}}</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="btn-group">
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Lưu lại</button>
+
+          </div>
+        </div>
+        </div>
+        <ng-template #other_content>
+          <p class="note-null-psc">Vui lòng thiết lập thông tin dịch vụ.</p>
+
+        </ng-template>
+      </div>
+      <div *ngIf="visible" class="tab-pane" id="thong_tin_bao_hanh" role="tabpanel">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-4 pl-0 justify-content-center align-items-center">
+                <span class="align-middle">Nguyên nhân:</span>
+              </div>
+              <div class="col-md-8 pl-0">
+                <div class="row">
+                  <ng-select #SelectNguyenNhanId [allowClear]="true"
+                             [items]="nguyenNhans"
+                             [disabled]="0"
+                             (selected)="nguyenNhanSelected($event)"
+                             (typed)="nguyenNhanTyped($event)"
+                             placeholder="Tìm kiếm"
+                             class="col-8 pl-0"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <span class="tthh-item" *ngFor="let item of createPhieuSuaChuaForm.controls.nguyen_nhans.controls; let i = index">
+                    {{ '[' + item.get('ma_nguyen_nhan').value + ']' + ' ' + item.get('mo_ta').value }}
+                    <i class="fa fa-times" aria-hidden="true" (click)="createPhieuSuaChuaForm.controls.nguyen_nhans.removeAt(i)"></i>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-4 pl-0 justify-content-center align-items-center">
+                <span class="align-middle">Hướng khắc phục:</span>
+              </div>
+              <div class="col-md-8 pl-0">
+                <div class="row">
+                  <ng-select #selectHuongKhacPhuc [allowClear]="true"
+                             [items]="huongKhacPhucs"
+                             [disabled]="0"
+                             (selected)="huongKhacPhucSelected($event)"
+                             (typed)="huongKhacPhucTyped($event)"
+                             placeholder="Tìm kiếm"
+                             class="col-8 pl-0"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+               <span class="tthh-item" *ngFor="let item of createPhieuSuaChuaForm.controls.huong_khac_phucs.controls; let i = index">
+                      {{ '[' + item.get('ma_huong_khac_phuc').value + ']' + ' ' + item.get('ten_huong_khac_phuc').value }}
+                      <i class="fa fa-times" aria-hidden="true" (click)="removeHuongKhacPhuc(i);"></i>
+                </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col table-responsive">
+            <table class="table">
+              <tr>
+                <th colspan="3">GHI CHÚ</th>
+              </tr>
+              <tr>
+                <td style="width: 20%;">Ghi chú</td>
+                <td><textarea type="text" class="form-control" placeholder="Ghi chú liên quan" formControlName="thong_tin_dich_vu_ghi_chu"></textarea></td>
+                <td style="width: 20%;"><button type="button" class="btn-primary col-4" (click)="addTTDVGhiChu()">Thêm</button> </td>
+              </tr>
+              <tr *ngFor="let item of createPhieuSuaChuaForm.controls.notes.controls; let i = index">
+                <td colspan="5">
+                  {{ item.get('note').value }} [{{ user.name }}]
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <table class="table">
+              <tr>
+                <th>
+                  DANH SÁCH HÌNH ẢNH
+                </th>
+                <th style="width: 20%;">
+                  <input #uploadButton type="file" class="hidden" multiple id="gallery-photo-add"
+                         accept="image/jpg, image/jpeg, image/png"
+                         (change)="uploadFiles($event)">
+                  <a class="btn btn-success btn-upload" (click)="triggerUpload()"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload</a>
+                </th>
+              </tr>
+              <tr>
+                <th colspan="2">
+                  <div id="div_images" class="clearfix" *ngIf="imgArray">
+                    <div class="img_item"  *ngFor="let img of imgArray; let i = index">
+                      <img class="img_images_upload" [src]="sserverUrl +  img">
+                      <a  (click)="deleteImage(i)" class="img_tindang img_tindang_new"><i class="fa fa-times-circle" title="Click để xóa ảnh"></i></a>
+                      <span class="thumbnail-selected"></span>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col table-responsive" >
+            <table class="table" >
+              <tr>
+                <th (click)="OpenAddLK()" data-toggle="modal" data-target="#add_de_nghi_lk"> <i class="fa fa-plus-square" aria-hidden="true"></i> Thêm mới đề nghị linh kiện</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div *ngIf="PhieuDeNghiLK.length > 0" >
+          <div class="row"  ng-repeat="item in data" class="ng-scope" *ngFor="let item_phieu_de_nghi of PhieuDeNghiLK; let i = index ">
+            <div class="col table-responsive" >
+              <table class="table" >
+                <tr>
+                  <th colspan="6">
+                    PHIẾU ĐỀ NGHỊ CẤP LINH KIỆN {{i+1}}
+                  </th>
+                </tr>
+                <tr>
+                  <th>Mã và tên LK</th>
+                  <th>Số lượng</th>
+                  <th>Đơn giá</th>
+                  <th>Thành tiền</th>
+                  <th>Trạng thái</th>
+                  <th >
+                    <a *ngIf="item_phieu_de_nghi.trang_thai != 2" data-toggle="modal" data-target="#delete_lk" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a *ngIf="item_phieu_de_nghi.trang_thai != 2" data-toggle="modal" data-target="#edit_de_nghi_lk" (click)="openDNEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+                  </th>
+                </tr>
+                <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item_chi_tiet of item_phieu_de_nghi.chi_tiet_de_nghi ">
+                  <td>[{{ item_chi_tiet.ma }}] {{ item_chi_tiet.ten }}</td>
+                  <td>{{ item_chi_tiet.so_luong }}</td>
+                  <td>{{ item_chi_tiet.gia_ban | decimalNumber }}</td>
+                  <td>{{ item_chi_tiet.gia_ban * item_chi_tiet.so_luong | decimalNumber}}</td>
+                  <td>{{status_phieu_de_nghi_lk[item_phieu_de_nghi.trang_thai]}}</td>
+                  <td></td>
+                </tr>
+              </table>
+
+
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col table-responsive">
+            <table class="table" formArrayName="danh_sach_chi_phi_di_lais">
+              <tr>
+                <th colspan="5">
+                  <div class="float-left">
+                    <span>THÔNG TIN ĐI LẠI (a)</span>
+                    <button type="button" class="btn btn-secondary" (click)="checkIn()">Check in</button>
+                  </div>
+                  <div class="float-right">
+                    <span>Tổng:</span>
+                    <span>{{ sumChiPhiDiLai | decimalNumber }}</span>
+                  </div>
+                </th>
+              </tr>
+              <tr (click)="(showChiPhiDiLai) ? showChiPhiDiLai = false : showChiPhiDiLai = true">
+                <td>Ngày giờ</td>
+                <td>Điểm Check In</td>
+                <td>Chi phí đi lại</td>
+                <td>Ghi chú</td>
+              </tr>
+              <tr *ngFor="let item of createPhieuSuaChuaForm.controls.danh_sach_chi_phi_di_lais.controls; let i = index" [formGroupName]="i">
+                <td>{{ item.get('created_at').value }}</td>
+                <td>{{item.get('address').value }}</td>
+                <td>{{ item.get('tong_tien').value | decimalNumber }}</td>
+                <td><textarea class="w-100" type="text" [value]="item.get('ghi_chu').value " formControlName="ghi_chu"></textarea></td>
+                <td style="text-align: right;">
+                  <a data-toggle="modal" data-target="" (click)="removeChiPhiDiLai(i)" ><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                  <a data-toggle="modal" data-target="" (click)="updateChiPhiDiLai(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col table-responsive">
+            <table class="table">
+              <tr>
+                <th>
+                  <span>TIỀN CÔNG SỬA CHỮA (b)</span>
+                </th>
+                <th></th>
+                <th>
+                  <span>Tổng:</span>
+                  <span>{{ sumTinhCongSuaChua | decimalNumber }}</span></th>
+              </tr>
+              <tr>
+                <td>Mã cách sửa chửa</td>
+                <td>Tên cách sửa chữa</td>
+                <td>Công sửa chữa</td>
+              </tr>
+              <ng-template *ngIf="createPhieuSuaChuaForm.controls.huong_khac_phucs.controls.length > 0">
+                <tr *ngFor="let item of createPhieuSuaChuaForm.controls.huong_khac_phucs.controls; let i = index">
+                  <td *ngIf="item.get('ma_huong_khac_phuc').value != null">{{ item.get('ma_huong_khac_phuc').value }}</td>
+                  <td *ngIf="item.get('ten_huong_khac_phuc').value != null">{{ item.get('ten_huong_khac_phuc').value }}</td>
+                  <td *ngIf="item.get('don_gia').value != null">{{ item.get('don_gia').value | decimalNumber }}</td>
+                </tr>
+              </ng-template>
+
+            </table>
+          </div>
+        </div>
+        <div *ngIf="phieu_tra_linh_kien">
+          <div class="row">
+            <div class="col table-responsive" >
+              <table class="table" >
+                <tr>
+                  <th colspan="5">
+                    <span style="width: 50%">TÍNH PHÍ NGOÀI BẢO HÀNH (c)</span>
+                    <span>Tổng:</span>
+                    <span class="pull-right">{{tong_cpnbh | decimalNumber}}</span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>Mã và tên LK</th>
+                  <th>Số lượng cấp</th>
+                  <th>Số lượng trả</th>
+                  <th>Đơn giá</th>
+                  <th>Thành tiền</th>
+                  <th>
+
+                    <button *ngIf="traLK && !phieu_tra_linh_kien.check_tra"  type="button" (click)="savePhieuTraLK()" class="btn btn-primary">
+                     Lưu phiếu trả LK
+                    </button>
+                    <button *ngIf="!traLK && !phieu_tra_linh_kien.check_tra"  type="button" (click)="openTraLinhKien()" class="btn btn-primary">
+                      Trả linh kiện
+                    </button>
+                    <a  *ngIf="phieu_tra_linh_kien.check_tra" href="javascript:void(0)" routerLink="/dashboard/receipt" [queryParams]="{ id: phieu_tra_linh_kien.chung_tu_id  }" class="btn btn-primary">
+                      Chi tiết trả linh kiện
+                    </a>
+
+                  </th>
+
+                </tr>
+                <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item_chi_tiet of phieu_tra_linh_kien.data ">
+                  <td>[{{ item_chi_tiet.ma }}] {{ item_chi_tiet.ten }}</td>
+                  <td>{{ item_chi_tiet.so_luong_cap }}</td>
+                  <td>{{ item_chi_tiet.so_luong_tra }}</td>
+                  <td>{{ item_chi_tiet.don_gia | decimalNumber }}</td>
+                  <td>{{ item_chi_tiet.don_gia * (item_chi_tiet.so_luong_cap - item_chi_tiet.so_luong_tra) | decimalNumber}}</td>
+                  <td>
+                    <div *ngIf="traLK && item_chi_tiet.so_luong_tra <= 0">
+                      <span class="bold">Số lượng trả:</span>
+                      <input  id="slt_chi_tiet_{{item_chi_tiet.linh_kien_id}}" type="number" value="{{ item_chi_tiet.so_luong }}">
+
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+
+
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col table-responsive">
+            <table class="table">
+              <tr>
+                <th>
+                  <span style="width: 50%">TỔNG CHI PHÍ BẢO HÀNH (d) = (a) +(b) + (c)</span>
+                  <span>Tổng:</span>
+                  <span class="pull-right">{{ total + tong_cpnbh  | decimalNumber }}</span>
+                </th>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col note-null-psc">
+          <div *ngIf="visible_hpcall;else other_content_visible" data-toggle="modal" data-target="#unchecked_fix" class="custom-control custom-checkbox">
+            <input id="checked_fix_input" type="checkbox" formControlName="checked_fix" />
+            <label class="input_checkbox" for="checked_fix_input">Hoàn Tất Bảo Hành</label>
+          </div>
+
+            <ng-template #other_content_visible>
+              <div data-toggle="modal" data-target="#checked_fix">
+                <input id="unchecked_fix_input" type="checkbox" formControlName="checked_fix" />
+                <label class="input_checkbox" for="unchecked_fix_input">Hoàn Tất Bảo Hành</label>
+              </div>
+            </ng-template>
+        </div>
+        </div>
+        <div class="btn-group">
+          <div class="form-group">
+            <button class="btn btn-primary" (click)="updateThongTinDichVu()">Lưu lại</button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="visible" class="tab-pane"  id="tra_xac_linh_kien" role="tabpanel">
+        <div *ngIf="linhkienxac && linhkienxac.length > 0;else other_content_xaclk" class="row">
+          <div class="col table-responsive">
+            <table class="table">
+              <tr>
+                <th>Linh kiện cấp</th>
+                <th>SL cấp</th>
+                <th>Linh kiện xác</th>
+                <th>SL trả</th>
+                <th>Hoàn thành</th>
+                <th>Thao tác</th>
+
+              </tr>
+              <tr *ngFor="let item_linhkienxac of linhkienxac; let i = index ">
+                <td>
+                    {{item_linhkienxac.linh_kien_cap.ma}}-{{item_linhkienxac.linh_kien_cap.ten}}
+                </td>
+                <td>
+                    {{item_linhkienxac.so_luong_cap}}
+                </td>
+                <td>
+                    <span *ngIf="item_linhkienxac.linh_kien_thu_hoi">
+                      {{item_linhkienxac.linh_kien_thu_hoi.ma}}-{{item_linhkienxac.linh_kien_thu_hoi.ten}}
+
+                    </span>
+                </td>
+                <td>
+                  <span *ngIf="!item_linhkienxac.hoan_thanh_tra_xac && (item_linhkienxac.so_luong_thu < item_linhkienxac.so_luong_cap)" style="color: red;">
+                       {{item_linhkienxac.so_luong_thu}}
+
+                  </span>
+                  <span *ngIf="item_linhkienxac.hoan_thanh_tra_xac">
+                       {{item_linhkienxac.so_luong_thu}}
+
+                  </span>
+                </td>
+                <td>
+                  <span *ngIf="item_linhkienxac.hoan_thanh_tra_xac">
+                      Đã trả xác
+
+                  </span>
+                    <span *ngIf="!item_linhkienxac.hoan_thanh_tra_xac">
+                        Chưa trả xác
+
+                    </span>
+                </td>
+                <td>
+                  <a data-toggle="modal" data-target="#edit_LKX" (click)="openEditLKX(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+                </td>
+
+              </tr>
+            </table>
+          </div>
+        </div>
+        <ng-template #other_content_xaclk>
+          <p class="note-hpcall"> Không nợ xác linh kiện</p>
+
+        </ng-template>
+
+      </div>
+      <div *ngIf="visible" class="tab-pane" id="happy_call" role="tabpanel">
+     <app-hpcall-action *ngIf="phieu_sua_chua_id && visible_hpcall;else other_content_hpcall" [phieu_sua_chua_id]="phieu_sua_chua_id" (trang_thai_psc)="trang_thai = $event;"></app-hpcall-action>
+        <ng-template #other_content_hpcall>
+          <p class="note-hpcall" *ngIf="!phieu_sua_chua_id"> Phiếu bảo hành chưa được tạo. Vui lòng thiết lập thông tin phiếu bảo hành.</p>
+          <p class="note-hpcall" *ngIf="phieu_sua_chua_id && !visible_hpcall "> Phiếu bảo hành chưa được sửa chữa. Bạn chưa thực hiện được chức năng này</p>
+
+        </ng-template>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<!-- The Modal -->
+
+
+<div class="modal fade" id="edit_LKX">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Sửa linh kiện xác</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form *ngIf="openLKX" [formGroup]="LKXEditForm" (submit)="onEditLKXSubmit($event)">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Linh kiện cấp:</label>
+             <input  class="form-control" disabled value="{{linhkienxac[editNLKIndex].linh_kien_cap.ma}}-{{linhkienxac[editNLKIndex].linh_kien_cap.ten}}">
+          </div>
+          <div class="form-group">
+            <label>Linh kiện thu hồi:</label>
+            <select2 [width]="439" class="form-control" [options]="options_lk" (valueChanged)="changeLinhKien($event)">
+              <option selected >{{linhkienthuhoiEdit.ma}}-{{linhkienthuhoiEdit.ten}}</option>
+            </select2>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Ghi chú:</label>
+            <textarea class="form-control" id="message-text" formControlName="ghi_chu"></textarea>
+          </div>
+          <div class="form-group">
+            <input id="hoan_thanh_tra_xac_input" type="checkbox" formControlName="hoan_thanh_tra_xac" />
+            <label  class="input_checkbox" for="hoan_thanh_tra_xac_input">Hoàn Tất Trả Xác</label>
+          </div>
+
+
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="add_de_nghi_lk" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Phiếu đề nghị cấp vật tư</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form>
+
+        <div class="modal-body">
+          <app-dncvt *ngIf="openAddLK" (onDeNghiItem)="add_phieu_de_nghi($event)" [de_nghi_id]="phieu_de_nghi_id" [tram_id]="tram_bao_hanh_id" [phieu_sua_chua_id]="phieu_sua_chua_id"></app-dncvt>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="edit_de_nghi_lk" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Phiếu đề nghị cấp vật tư</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form>
+
+        <div class="modal-body">
+          <app-dncvt *ngIf="openAddLK" (onDeNghiItem)="edit_phieu_de_nghi($event)" [de_nghi_id]="phieu_de_nghi_id" [tram_id]="tram_bao_hanh_id" [phieu_sua_chua_id]="phieu_sua_chua_id"></app-dncvt>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="checked_fix" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xác nhận hoàn tất sửa chữa?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="checked_fix('checked')">Yes</button>
+
+        <button type="button" class="btn btn-danger" (click)="checked_fix('unchecked')" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="unchecked_fix" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Bạn có chắc muốn hủy xác nhận hoàn tất sửa chữa?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="checked_fix('unchecked')">Yes</button>
+
+        <button type="button" class="btn btn-danger" (click)="checked_fix('checked')" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete_lk" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa phiếu đề nghị này không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onDeleteDNSubmit()">Yes</button>
+
+        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>

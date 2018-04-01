@@ -1,0 +1,238 @@
+<div class="content">
+  <div id="test" class="app-227">
+    <h4 class="title-app">Danh Sách Linh Kiện</h4>
+    <div class="excel">
+      <form>
+        <span class="btn btn-default btn-file">
+    <i class="fa fa-upload" aria-hidden="true"></i> Upload từ excel <input id="file"  (change)="import_excel($event)"  type="file">
+    </span>
+        <a (click)="export_excel_dslk()"> <i  class="fa fa-download" aria-hidden="true"></i> Xuất excel</a>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-md-5 ">
+        <input type="text" class="form-control" placeholder="Tìm kiếm mã linh kiện" (keyup.enter)="onKey($event)">
+      </div>
+    </div>
+    <table id="table-access"  class="table table-condensed table-hover ng-scope" *ngIf="nganhHangList&&linhKienList">
+      <thead>
+      <tr>
+        <th>Mã LK</th>
+        <th>Tên LK</th>
+        <th>Nhóm sản phẩm</th>
+        <th>Ngành hàng</th>
+        <th>Giá bán ngoài bảo hành</th>
+        <th>Đơn vị</th>
+        <th>Thời hạn (tháng)</th>
+        <th class="btn">
+          <a data-toggle="modal" data-target="#add_accessories">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+
+      <tbody>
+      <tr *ngFor="let item of linhKienList ; let i=index" class="ng-scope">
+        <td class="ma">{{item.ma}}</td>
+        <td class="ten">{{item.ten}}</td>
+        <td class="san_pham_id">{{item.nhom_san_pham}}</td>
+        <td class="ng-Obinding">{{item.nganh_hang}}</td>
+        <td class="gia_ban">{{item.gia_ban}}</td>
+        <td class="don_vi">{{item.don_vi}}</td>
+        <td class="thoi_han">{{item.thang_gia_han_sau_bao_hanh}}</td>
+        <td class="btn">
+          <a data-toggle="modal" data-target="#delete_accessories" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_accessories" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+        </td>
+      </tr>
+      </tbody>
+
+
+
+    </table>
+
+    <ul class="pagination" *ngIf="linhKienPagination && linhKienPagination.last_page > 1">
+        <li class="page-item"><a class="page-link" (click)="goToPageFirst()">Đầu tiên</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPagePrev()">Trước</a></li>
+      <li class="page-item"><a class="page-link" >{{linhKienPagination.current_page}}</a></li>
+      <li class="page-item" *ngIf="linhKienPagination.current_page<linhKienPagination.last_page">
+        <a class="page-link" (click)="goToPageNext()">{{linhKienPagination.current_page+1| number}}</a>
+      </li>
+      <li class="page-item" *ngIf="linhKienPagination.current_page<linhKienPagination.last_page">
+        <a class="page-link" >...</a>
+      </li>
+      <li class="page-item" *ngIf="linhKienPagination.current_page<linhKienPagination.last_page">
+        <a class="page-link" (click)="goToPageLast()">{{linhKienPagination.last_page}}</a>
+      </li>
+      <li class="page-item"><a class="page-link" (click)="goToPageNext()">Tiếp</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPageLast()">Cuối cùng</a></li>
+    </ul>
+    <!-- The Modal -->
+    <div class="modal fade" id="add_accessories">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm linh kiện</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="linhKienForm" (submit)="onSubmitAddData($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="id_accessories">Mã linh kiện:</label>
+                <input type="text" class="form-control" id="id_accessories" formControlName="ma">
+                <span class="errors" *ngIf="linhKienForm.get('ma').invalid && linhKienForm.get('ma').touched">Vui lòng nhập mã linh kiện</span>
+              </div>
+              <div class="form-group">
+                <label for="name_accessories">Tên linh kiện:</label>
+                <input type="text" class="form-control" id="name_accessories" formControlName="ten">
+                <span class="errors" *ngIf="linhKienForm.get('ten').invalid && linhKienForm.get('ten').touched">Vui lòng nhập tên linh kiện</span>
+              </div>
+
+              <div class="form-group" *ngIf="nganhHangList&&nganhHangList.length">
+                  <label for="category">Ngành hàng:</label>
+                  <select class="list_cat" class="form-control" (change)="onChangeNganhHang($event)">
+                    <option >Lựa chọn ngành hàng</option>
+                    <option *ngFor="let item of nganhHangList; let i=index" [value]="item.id">{{item.ten}}</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="product">Sản phẩm:</label>
+                <select name="product"  class="form-control" formControlName="san_pham_id">
+                  <option [ngValue]="null">Lựa chọn nhóm sản phẩm</option>
+                  <option *ngFor="let item of sanPhamList; let i=index" [value]="item.id">{{item.ten}}</option>
+                </select>
+                <span class="errors" *ngIf="linhKienForm.get('san_pham_id').invalid && linhKienForm.get('san_pham_id').touched">Vui lòng lựa chọn nhóm sản phẩm</span>
+              </div>
+
+
+
+              <div class="form-group">
+                <label for="price">Giá bán ngoài bảo hành:</label>
+                <input type="number" class="form-control" id="price" formControlName="gia_ban">
+                <span class="errors" *ngIf="linhKienForm.get('gia_ban').invalid && linhKienForm.get('gia_ban').touched">Vui lòng nhập giá bán ngoài bảo hành</span>
+              </div>
+              <div class="form-group">
+                <label for="unit">Đơn vị:</label>
+                <input type="text" class="form-control" id="unit" formControlName="don_vi">
+                <span class="errors" *ngIf="linhKienForm.get('don_vi').invalid && linhKienForm.get('don_vi').touched">Vui lòng nhập đơn vị</span>
+              </div>
+              <div class="form-group">
+                <label for="month">Thời hạn (tháng):</label>
+                <input type="number" class="form-control" id="month" formControlName="thang_gia_han_sau_bao_hanh">
+                <span class="errors" *ngIf="linhKienForm.get('thang_gia_han_sau_bao_hanh').invalid && linhKienForm.get('thang_gia_han_sau_bao_hanh').touched">Vui lòng nhập thời hạn</span>
+              </div>
+              <div class="form-group">
+                <label for="month">Trả xác:</label>
+                <select name="product"  class="form-control" formControlName="tra_xac">
+                  <option value="0">Không</option>
+                  <option value="1">Có</option>
+                </select>
+                <span class="errors" *ngIf="linhKienForm.get('thang_gia_han_sau_bao_hanh').invalid && linhKienForm.get('thang_gia_han_sau_bao_hanh').touched">Vui lòng nhập thời hạn</span>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_accessories">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa linh kiện</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form  [formGroup]="linhKienEditForm" (submit)="onSubmitEditData($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="edit_id_accessories">Mã linh kiện:</label>
+                <input type="text" class="form-control" id="edit_id_accessories" formControlName="ma">
+                <span class="errors" *ngIf="linhKienEditForm.get('ma').invalid && linhKienEditForm.get('ma').touched">Vui lòng nhập mã linh kiện</span>
+              </div>
+              <div class="form-group">
+                <label for="edit_name_accessories">Tên linh kiện:</label>
+                <input type="text" class="form-control" id="edit_name_accessories" formControlName="ten">
+                <span class="errors" *ngIf="linhKienEditForm.get('ten').invalid && linhKienEditForm.get('ten').touched">Vui lòng nhập tên linh kiện</span>
+              </div>
+
+              <div class="form-group" *ngIf="nganhHangList&&nganhHangList.length">
+                  <label for="category">Ngành hàng:</label>
+                  <select class="list_cat" class="form-control" (change)="onChangeNganhHang($event)" formControlName="nganh_hang_id">
+                    <option >Chung</option>
+                    <option *ngFor="let item of nganhHangList; let i=index" [value]="item.id">{{item.ten}}</option>
+                  </select>
+              </div>
+
+              <div class="form-group" >
+                <label for="product">Sản phẩm:</label>
+                <select name="product" class="list_product" class="form-control" formControlName="san_pham_id">
+                  <option [ngValue]="null">Lựa chọn nhóm sản phẩm</option>
+                  <option *ngFor="let item of sanPhamList; let i=index" [value]="item.id">{{item.ten}}</option>
+                </select>
+                <span class="errors" *ngIf="linhKienEditForm.get('san_pham_id').invalid && linhKienEditForm.get('san_pham_id').touched">Vui lòng lựa chọn sản phẩm</span>
+              </div>
+
+
+
+              <div class="form-group">
+                <label for="edit_price">Giá bán ngoài bảo hành:</label>
+                <input type="number" class="form-control" id="edit_price" formControlName="gia_ban">
+                <span class="errors" *ngIf="linhKienEditForm.get('gia_ban').invalid && linhKienEditForm.get('gia_ban').touched">Vui lòng nhập giá bán bảo hành</span>
+              </div>
+              <div class="form-group">
+                <label for="edit_unit">Đơn vị:</label>
+                <input type="text" class="form-control" id="edit_unit"  formControlName="don_vi">
+                <span class="errors" *ngIf="linhKienEditForm.get('don_vi').invalid && linhKienEditForm.get('don_vi').touched">Vui lòng nhập đơn vị</span>
+              </div>
+              <div class="form-group">
+                <label for="edit_month">Thời hạn (tháng):</label>
+                <input type="number" class="form-control" id="edit_month" formControlName="thang_gia_han_sau_bao_hanh">
+                <span class="errors" *ngIf="linhKienEditForm.get('thang_gia_han_sau_bao_hanh').invalid && linhKienEditForm.get('thang_gia_han_sau_bao_hanh').touched">Vui lòng nhập thời hạn</span>
+              </div>
+
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_accessories" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onSubmitDeleteData()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

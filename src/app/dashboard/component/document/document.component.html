@@ -1,0 +1,145 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách loại chứng từ</h4>
+
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Loại chứng từ</th>
+        <th>Tên chứng từ</th>
+        <th>Mục đích sử dụng</th>
+        <th>
+          <a data-toggle="modal" data-target="#add_document">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+      <tr *ngFor="let item of loaiChungTus; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.loai_chung_tu }}</td>
+        <td>{{ item.ten_chung_tu }}</td>
+        <td>{{ item.muc_dich_su_dung }}</td>
+        <td>
+          <a data-toggle="modal" data-target="#delete_document" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_document" (click)="onEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+    <!--<ul class="pagination">-->
+      <!--<li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">1</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">2</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">3</a></li>-->
+      <!--<li class="page-item"><a class="page-link" href="#">Next</a></li>-->
+    <!--</ul>-->
+    <!-- The Modal -->
+    <div class="modal fade" id="add_document">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm loại chứng từ</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="createLoaiChungTuForm" (submit)="onCreateSubmit($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="id_document">Loại chứng từ:</label>
+                <input type="text" class="form-control" id="id_document"formControlName="loai_chung_tu">
+                <span class="errors" *ngIf="createLoaiChungTuForm.get('loai_chung_tu').invalid && createLoaiChungTuForm.get('loai_chung_tu').touched">Vui lòng nhập loại chứng từ</span>
+              </div>
+              <div class="form-group">
+                <label for="name_document">Tên loại chứng từ:</label>
+                <input type="text" class="form-control" id="name_document" formControlName="ten_chung_tu">
+                <span class="errors" *ngIf="createLoaiChungTuForm.get('ten_chung_tu').invalid && createLoaiChungTuForm.get('ten_chung_tu').touched">Vui lòng nhập tên chứng từ</span>
+              </div>
+              <div class="form-group">
+                <label for="muc_dich">Mục đích sử dụng:</label>
+                <textarea id="muc_dich" class="form-control" formControlName="muc_dich_su_dung">
+                </textarea>
+                <span class="errors" *ngIf="createLoaiChungTuForm.get('muc_dich_su_dung').invalid && createLoaiChungTuForm.get('muc_dich_su_dung').touched">Vui lòng nhập mục đích sử dụng</span>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary" [disabled]="createLoaiChungTuForm.invalid">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_document">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa loại chứng từ</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="editLoaiChungTuForm" (submit)="onEditSubmit($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="edit_id_document">Loại chứng từ:</label>
+                <input type="text" class="form-control" id="edit_id_document" formControlName="loai_chung_tu">
+                <input type="hidden" class="form-control" formControlName="id">
+                <span class="errors" *ngIf="editLoaiChungTuForm.get('loai_chung_tu').invalid && editLoaiChungTuForm.get('loai_chung_tu').touched">Vui lòng nhập loại chứng từ</span>
+              </div>
+              <div class="form-group">
+                <label for="edit_name_document">Tên chứng từ:</label>
+                <input type="text" class="form-control" id="edit_name_document" formControlName="ten_chung_tu">
+                <span class="errors" *ngIf="editLoaiChungTuForm.get('ten_chung_tu').invalid && editLoaiChungTuForm.get('ten_chung_tu').touched">Vui lòng nhập tên chứng từ</span>
+              </div>
+              <div class="form-group">
+                <label for="muc_dich_su_dung">Mục đích sử dụng:</label>
+                <input type="text" class="form-control" id="muc_dich_su_dung" formControlName="muc_dich_su_dung">
+                <span class="errors" *ngIf="editLoaiChungTuForm.get('muc_dich_su_dung').invalid && editLoaiChungTuForm.get('muc_dich_su_dung').touched">Vui lòng nhập mục đích sử dụng</span>
+              </div>
+
+            </div>
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary" [disabled]="editLoaiChungTuForm.invalid">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_document" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onDeleteSubmit()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

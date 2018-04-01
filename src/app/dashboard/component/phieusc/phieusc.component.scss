@@ -1,0 +1,189 @@
+:host {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+td{
+    position: relative;
+}
+span.date{
+    cursor: pointer;
+}
+@media (min-width: 768px)
+{
+  .col-md-3 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 50%;
+  }
+}
+.btn-group{
+    margin: 20px;
+    display: block;
+    text-align: center;
+}
+.btn-group .form-group{
+    margin: 0px auto;
+}
+.info-item{
+    padding: 12px;
+}
+.info-item label{
+    width: 170px;
+}
+.row{
+    margin: 0px;
+}
+.col:first-of-type{
+    padding-left: 0px;
+}
+.col:last-of-type{
+    padding-right: 0px;
+}
+.table span{
+    display: inline-block;
+}
+.list-img{
+    list-style: none;
+    margin: 0px;
+}
+.list-img li{
+    display: inline-block;
+}
+.list-img img{
+    height: 100px;
+}
+.icon-minize {
+  position: inherit;
+  bottom: 0;
+}
+.tts, .ttkh {
+  table-layout: fixed;
+}
+.tts td, .ttkh td { width: 50%; }
+.tthh-item:first-child:before {
+  content: none;
+}
+.tthh-item:before {
+  content: ',';
+}
+.tthh-item i {
+  color: red;
+  cursor: pointer;
+}
+.hidden {
+  visibility: hidden;
+  position: absolute;
+  left: 0px;
+}
+.list-img li {
+  margin-right: 15px;
+}
+.check-in {
+  cursor: pointer;
+}
+
+@media (max-width: 375px) {
+  .list-img img {
+    width: 90%;
+  }
+  .btn-upload {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
+.note-hpcall , .note-null-psc{
+  margin-left: 2%;
+}
+#add_edit_lk .modal-content {
+  width: 1200px;
+  margin-left: -180px;
+}
+.row {
+  margin-bottom: 2%;
+  margin-top: 2%;
+
+}
+.img_item {
+  width: 135px;
+  margin: 10px 1%;
+  float: left;
+  overflow: hidden;
+  padding: 2px;
+  position: relative;
+  -webkit-transition: all 1.5s ease-in-out;
+  transition: all 1.5s ease-in-out;
+}
+.img_item img {
+  width: 100%;
+  border: none !important;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.img_tindang {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  z-index: 3;
+}
+.thumbnail-selected {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 40px;
+  background-position: 50%;
+  opacity: 0;
+  z-index: 2;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+a.img_tindang.img_tindang_new {
+  color: red;
+}
+.bold{
+  font-weight: bold;
+}
+#edit_de_nghi_lk .modal-content , #add_de_nghi_lk .modal-content {
+  width: 1000px;
+  margin-left: -100px;
+}
+input[type=checkbox] {
+  position: relative;
+  cursor: pointer;
+}
+input[type=checkbox]:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  border: 2px solid #555555;
+  border-radius: 3px;
+  background-color: white;
+}
+input[type=checkbox]:checked:after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 10px;
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+  top: 2px;
+  left: 6px;
+}
+label.input_checkbox {
+  margin-left: 10px;
+  margin-top: -4px;
+}
+

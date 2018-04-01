@@ -1,0 +1,280 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách người dùng</h4>
+
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr><th>STT</th>
+        <th>Email đăng nhập</th>
+        <th>Tên người dùng</th>
+        <th>Điện thoại</th>
+        <th>Loại tài khoản</th>
+        <th>Trạm/ Trung tâm</th>
+
+        <th>
+          <a data-toggle="modal" data-target="#add_user">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+      <tr *ngFor="let item of users; let i = index">
+        <td>{{  i + 1 }}</td>
+        <td>{{ item.email }}</td>
+
+        <td>{{ item.name }}</td>
+        <td>{{ item.dien_thoai }}</td>
+        <td>{{ loaiNguoiDungMap[item.loai_nguoi_dung_id].ten_loai }}</td>
+        <td>
+          <div *ngIf="(item.tram_bao_hanh_id > 0 || item.trung_tam_bao_hanh_id > 0)">
+               <span *ngIf="item.tram_bao_hanh_id > 0;else other_content">
+            {{ tramBaoHanhMap[item.tram_bao_hanh_id].ten}}
+          </span>
+            <ng-template #other_content>
+                <span *ngIf="item.trung_tam_bao_hanh_id > 0">
+            {{ trungTamBaoHanhMap[item.trung_tam_bao_hanh_id].ten}}
+          </span>
+            </ng-template>
+          </div>
+
+
+
+        </td>
+        <td>
+          <a data-toggle="modal" data-target="#delete_user" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_user" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+      <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+    <!-- The Modal -->
+    <div class="modal fade" id="add_user">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm tài khoản người dùng</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="createUserForm" (submit)="onCreate($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="email_user">Email:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="email_user" formControlName="email">
+                    <span class="errors" *ngIf="createUserForm.get('email').invalid && createUserForm.get('email').touched">Vui lòng nhập email</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="name_user">Tên người dùng:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="name_user" formControlName="name">
+                    <span class="errors" *ngIf="createUserForm.get('name').invalid && createUserForm.get('name').touched">Vui lòng nhập tên người dùng</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt">Số điện thoại:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="sdt" formControlName="dien_thoai">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt">Mật khẩu:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="password" class="form-control" id="pass" formControlName="password">
+                    <span class="errors" *ngIf="createUserForm.get('password').invalid && createUserForm.get('password').touched">Vui lòng nhập mật khẩu trên 6 kí tự</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Loại tài khoản1:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_role" [data]="loaiNguoiDungs" (valueChanged)="nguoiDungSelectCreateValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="loai_nguoi_dung_id">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Trung tâm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_company" [data]="trungTamBaoHanhs" (valueChanged)="trungTamBaoHanhCreateSelectValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="trung_tam_bao_hanh_id">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_tramBaoHanh" [data]="tramBaoHanhs" (valueChanged)="tramBaoHanhCreateSelectValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="tram_bao_hanh_id">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" [disabled]="createUserForm.invalid" class="btn btn-primary">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_user">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa tài khoản người dùng</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="updateUserForm" (submit)="onUpdate($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="email_user">Email:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="edit_email_user" formControlName="email">
+                    <input type="hidden" class="form-control" formControlName="id">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="name_user">Tên người dùng:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="edit_name_user" formControlName="name">
+                    <span class="errors" *ngIf="updateUserForm.get('name').invalid && updateUserForm.get('name').touched">Vui lòng nhập tên người dùng</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt">Số điện thoại:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="edit_sdt" formControlName="dien_thoai">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt" (click)="change_pass()"><b>Đổi mật khẩu</b></label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input *ngIf="doi_mk" placeholder="Nhập mật khẩu mới" type="password" class="form-control" id="edit_pass" formControlName="password">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="loaiNguoiDungs.length > 0">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Loại tài khoản:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_role" [data]="loaiNguoiDungs" [value]="updateUserForm.get('loai_nguoi_dung_id').value" (valueChanged)="nguoiDungEditreateValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="loai_nguoi_dung_id">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="trungTamBaoHanhs.length > 0">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Trung tâm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_company" [data]="trungTamBaoHanhs" [value]="updateUserForm.get('trung_tam_bao_hanh_id').value" (valueChanged)="trungTamBaoHanhEditSelectValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="trung_tam_bao_hanh_id">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="tramBaoHanhs.length > 0">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" [options]="options_tramBaoHanh" [data]="tramBaoHanhs" [value]="updateUserForm.get('tram_bao_hanh_id').value" (valueChanged)="tramBaoHanhCreateEditValueChanged($event)"></select2>
+                    <input type="hidden" formControlName="tram_bao_hanh_id">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_user" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Bạn có chắc muốn xóa dùng này không?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onDelete()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

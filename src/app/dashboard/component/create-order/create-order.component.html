@@ -1,0 +1,193 @@
+<div class="content">
+  <div class="app-227">
+    <div class="receipt-content">
+      <div id="full-width" class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-md-12">
+              <div class="invoice-wrapper">
+                <div class="receipt-title">
+                  <h4>ĐƠN ĐẶT HÀNG</h4>
+                </div>
+              
+                <form [formGroup]="createOrderForm" (submit)="onSubmitOrder($event)">
+                  <div class="center">
+                    <input type="text" 
+                    class="form-control date-picker" #dpTime="bsDatepicker" bsDatepicker [(bsValue)]="orderDate"
+                      (bsValueChange)="onChangeDate(true)"
+                    />
+                    <span (click)="onCheck(dpTime)">Ngày {{dateShow.date}} tháng {{dateShow.month}} năm {{dateShow.year}}</span>
+
+                  </div>
+
+                  <div class="row" style="margin: 20px 0px;">
+                    <div class="col"></div>
+                    <div class="col" style="text-align: center">
+                      <label>Số</label>
+                      <input type="number" style="width: 30%;" [readonly]="this.orderId" class="input-write center" formControlName="so_ct"/>
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                  <div class="row" style="margin: 20px 0px;">
+                    <div class="col-4" style="display: flex;">
+                      <label style="width:60px; margin-bottom: 0px;">Lý do</label>
+                      <input type="text" class="input-write" style="flex: 1" [readonly]="this.orderId" formControlName="ly_do"/>
+                    </div>
+                  </div>
+                  <div class="row" style="margin: 20px 0px;">
+                    <div class="col" [hidden]="this.orderId">
+                      <label>Mã linh kiện</label>
+                      <select2 [width]="200" [options]="options_lk" (valueChanged)="changeLinhKien($event)">
+                        <option *ngIf="data_lk_map">{{data_lk_map.ma + '-' + data_lk_map.ten}}</option>
+                      </select2>
+                    </div>
+                    <div class="col" [hidden]="this.orderId">
+                      <label>Số lượng yêu cầu</label>
+                      <input type="number" style="width: 30%;" class="input-write center" [(ngModel)]="orderForm.quantity" [ngModelOptions]="{standalone: true}"/>
+                    </div>
+                    <div class="col">
+                      <label>Thời hạn cần VTLK:</label>
+                      <input type="text" style="width: 40%; padding: 0px 5px;" class="input-write date-picker" #dp="bsDatepicker" bsDatepicker value="{{orderForm.duration | date: 'dd/MM/yyyy' }}" [(bsValue)]="orderForm.duration" (bsValueChange)="onChangeDate('duration')"
+                      />
+                      <span (click)="onCheck(dp)" class="input-write {{isNotCheckTime?'disabled':''}}">{{dateDurationShow.date}}/{{dateDurationShow.month}}/{{dateDurationShow.year}}</span>
+                    </div>
+                  </div>
+                  
+                  <div id="add-receipt">
+                    <button type="button" class="btn btn-secondary" [hidden]="this.orderId" (click)="onAddItemOrder()">Thêm vào danh sách</button>
+                  </div>
+
+                  <table class="table table-condensed table-hover">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th style="width: 250px; text-align: center;">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm, hàng hóa
+                        </th>
+                        <th>Mã VT</th>
+                        <th>ĐVT</th>
+                        <th>Số lượng yêu cầu</th>
+                        <th colspan="2">Thời hạn cần vật tư, LK</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of orderTable; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.accessory}}</td>
+                        <td>{{item.unit}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.time| dateTime}}</td>
+                        <td>
+                          <a (click)="removeOrderItem(item.id)" [hidden]="this.orderId">
+                            <i class="fa fa-trash-o"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="3" class="center">Tổng cộng</td>
+                        <td></td>
+                        <td>{{orderQuantitySumary}}</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <div id="action-receip">
+                    <div id="print" [hidden]="!this.orderId" class="print">
+                      <a (click)="onPrintOrder()">
+                        <i class="fa fa-print"></i>
+                        In danh sách
+                      </a>
+                    </div>
+                    <div id="save" class="print">
+                      <button [hidden]="this.orderId">
+                        <i class="fa fa-floppy-o"></i>
+                        Lưu lại
+                      </button>
+                      <button [hidden]="!this.orderId" type="button" (click)="openEdit()">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        Sửa
+                      </button>
+                    </div>
+                    <div id="close" class="print">
+                      <a href="#/dashboard/danh-sach-don-dat-hang">
+                        <i class="fa fa-window-close-o"></i>
+                        Đóng
+                      </a>
+                    </div>
+                  </div>
+                </form>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="order-print" style="display: none" *ngIf="orderId" >
+          <div class="order-header" *ngIf="congty" >
+            <div class="title">{{congty.ten}}</div>
+            <div>
+              {{congty.dia_chi}}
+            </div>
+          </div>
+
+          <div class="order-body">
+            <div class="title">ĐƠN ĐẶT HÀNG</div>
+            <div class="order-time">Ngày {{dateShow.date}} tháng {{dateShow.month}} năm {{dateShow.year}}</div>
+            <div class="order-no">Số: DDH/ddmm/STT</div>
+
+            <div class="order-info">
+              <div style="padding-top:10px">
+                <label>Họ tên người đặt hàng:</label>
+                <div class="dot-inline" *ngIf="nguoi_dat_hang">{{nguoi_dat_hang.name}}</div>
+              </div>
+              <div style="padding-top:10px">
+                <label>Bộ phận:</label>
+                <div class="dot-inline"></div>
+              </div>
+              <div style="padding-top:10px">
+                <label>Lý do đặt hàng:</label>
+                <div class="dot-inline">{{createOrderForm.value.ly_do}}</div>
+              </div>
+            </div>
+            <div class="order-detail">
+              <table>
+                <tr>
+                  <th class="text center">STT</th>
+                  <th style="width: 25%;">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm,hàng hóa</th>
+                  <th class="text center">Mã VT</th>
+                  <th class="text center">ĐVT</th>
+                  <th class="text center">Số lượng yêu cầu</th>
+                  <th class="text center">Thời hạn cần vật tư, LK</th>
+                </tr>
+                <tr *ngFor="let item of orderTable; let i=index">
+                  <td class="text center">{{i+1}}</td>
+                  <td>{{item.name}}</td>
+                  <td class="text center">{{item.accessory}}</td>
+                  <td class="text center">{{item.unit}}</td>
+                  <td class="text center">{{item.quantity}}</td>
+                  <td class="text center">{{item.time| dateTime}}</td>
+                </tr>
+                <tr>
+                  <td colspan="3" style="text-align:center">Tổng cộng</td>
+                  <td></td>
+                  <td class="text center">{{orderQuantitySumary}}</td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="order-footer">
+            <div class="row">
+              <div style="width: 50%; text-align:center; float: left; color: #fff;">.</div>
+              <div style="width: 50%; text-align:center; float: right">Ngày ... tháng ... năm ... </div>
+              <div class="col">Trưởng bộ phận</div>
+              <div class="col">Người đặt hàng</div>
+              <div style="width: 50%; text-align:center; margin-top: 40px; float: left; color: #fff;">.</div>
+              <div style="width: 50%; text-align:center; margin-top: 40px; float: right" *ngIf="nguoi_dat_hang">{{nguoi_dat_hang.name}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

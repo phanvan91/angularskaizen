@@ -1,0 +1,373 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh Sách Trạm Bảo Hành</h4>
+
+    <div class="excel">
+      <form>
+        <a class="btn btn-default btn-file" data-toggle="modal" data-target="#open_upload">
+          <i class="fa fa-upload" aria-hidden="true"></i> Upload từ excel
+        </a>
+        <input id="file"  (change)="importExcel($event)"  type="file">
+        <a (click)="exportExcel()"> <i  class="fa fa-download" aria-hidden="true"></i> Xuất excel</a>
+      </form>
+    </div>
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Mã trạm</th>
+          <th>Loại trạm</th>
+          <th>Tên trạm</th>
+          <th>Trung tâm</th>
+          <th>Điện thoại</th>
+          <th>Đơn vị vận chuyển</th>
+          <th>Người đại diện</th>
+          <th>Địa chỉ</th>
+          <th>Tỉnh</th>
+          <th>
+            <a data-toggle="modal" data-target="#add_station">
+              <i class="fa fa-plus-square" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of tramBaoHanhList; let i=index" class="ng-scope">
+          <td class="ng-binding">{{i+1}}</td>
+          <td class="ng-binding">{{item.ma}}</td>
+          <td class="ng-Obinding">{{loaiTram[item.loai_tram]}}</td>
+          <td class="ng-Obinding">{{item.ten}}</td>
+          <td class="ng-Obinding">{{tTamBaoHanhName(item.trung_tam_bao_hanh_id)}}</td>
+          <td class="ng-Obinding">{{item.so_dien_thoai}}</td>
+          <td class="ng-Obinding">{{item.don_vi_van_chuyen}}</td>
+          <td class="ng-Obinding">{{item.nguoi_dai_dien}}</td>
+          <td class="ng-Obinding">{{item.dia_chi}}</td>
+          <td class="ng-Obinding">{{tinhMap[item.tinh]}}</td>
+          <td class="ng-binding">
+              <a data-toggle="modal" data-target="#delete_station" (click)="deleteIndex = i">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+              </a>
+              <a data-toggle="modal" data-target="#edit_station" (click)="openEditTramBaoHanh(i)">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              </a>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+      <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+    <!-- The Modal -->
+    <div class="modal fade" id="add_station">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm trạm bảo hành</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="tramBaoHanhForm" (submit)="onSubmitAddData($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="center">Trung tâm bảo hành:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select id="center" class="form-control" formControlName="trung_tam_bao_hanh_id">
+                      <option value="null">Lựa chọn trung tâm</option>
+                      <option *ngFor="let item of tTamBaoHanhList; let i=index" [value]="item.id">{{item.ten}}</option>
+                    </select>
+                    <span class="errors" *ngIf="tramBaoHanhForm.get('trung_tam_bao_hanh_id').invalid && tramBaoHanhForm.get('trung_tam_bao_hanh_id').touched">Vui lòng lựa chọn trung tâm bảo hành</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="type_station">Loại trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select id="type_station" class="form-control" formControlName="loai_tram">
+                      <option value="1" [selected]="true">Tiêu chuẩn</option>
+                      <option value="2">Rút gọn</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="id_station">Mã trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="id_station" formControlName="ma">
+                    <span class="errors" *ngIf="tramBaoHanhForm.get('ma').invalid && tramBaoHanhForm.get('ma').touched">Vui lòng lựa nhập mã trạm</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="name_station">Tên trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="name_station" formControlName="ten">
+                    <span class="errors" *ngIf="tramBaoHanhForm.get('ten').invalid && tramBaoHanhForm.get('ten').touched">Vui lòng nhập tên trạm</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="addr_station">Địa chỉ:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="addr_station" formControlName="dia_chi">
+                    <span class="errors" *ngIf="tramBaoHanhForm.get('dia_chi').invalid && tramBaoHanhForm.get('dia_chi').touched">Vui lòng nhập địa chỉ</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="addr_station">Tỉnh:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" (valueChanged)="changeCity($event)">
+                      <option>Chọn tỉnh/ thành phố</option>
+
+                      <option *ngFor="let c of tinhList"
+                              [value]="c.code">{{c.name}}</option>
+
+                    </select2>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt_station">Số điện thoại:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="sdt_station" formControlName="so_dien_thoai">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="don_vi_van_chuyen">Đơn vị vận chuyển:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="don_vi_van_chuyen" formControlName="don_vi_van_chuyen">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="nguoi_dai_dien">Người đại diện:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="nguoi_dai_dien" formControlName="nguoi_dai_dien">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_station">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa trung tâm bảo hành</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="tramBaoHanhEditForm" (submit)="onSubmitEditData($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="center">Trung tâm bảo hành:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select id="center" class="form-control" formControlName="trung_tam_bao_hanh_id">
+                      <option>Lựa chọn trung tâm</option>
+                      <option *ngFor="let item of tTamBaoHanhList; let i=index" [value]="item.id">{{item.ten}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="type_station">Loại trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select id="type_station" class="form-control" formControlName="loai_tram">
+                      <option value="1">Tiêu chuẩn</option>
+                      <option value="2">Rút gọn</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="id_station">Mã trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="id_station" formControlName="ma">
+                    <span class="errors" *ngIf="tramBaoHanhEditForm.get('ma').invalid && tramBaoHanhEditForm.get('ma').touched">Vui lòng nhập mã trạm</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="name_station">Tên trạm:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="name_station" formControlName="ten">
+                    <span class="errors" *ngIf="tramBaoHanhEditForm.get('ten').invalid && tramBaoHanhEditForm.get('ten').touched">Vui lòng nhập tên trạm</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="addr_station">Địa chỉ:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="addr_station" formControlName="dia_chi">
+                    <span class="errors" *ngIf="tramBaoHanhEditForm.get('dia_chi').invalid && tramBaoHanhEditForm.get('dia_chi').touched">Vui lòng nhập địa chỉ</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="addr_station">Tỉnh:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <select2 [width]="280" (valueChanged)="changeEditCity($event)" *ngIf="editCity" >
+                      <option>{{edit_city?edit_city:'Chọn tỉnh/ thành phố'}}</option>
+
+                      <option *ngFor="let c of tinhList"
+                              [value]="c.code">{{c.name}}</option>
+
+                    </select2>
+                  </div>
+                </div>
+
+
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="sdt_station">Số điện thoại:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="sdt_station" formControlName="so_dien_thoai">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="don_vi_van_chuyen">Đơn vị vận chuyển:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="don_vi_van_chuyen" formControlName="don_vi_van_chuyen">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="nguoi_dai_dien">Người đại diện:</label>
+                  </div>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="nguoi_dai_dien" formControlName="nguoi_dai_dien">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_station" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onSubmitDeleteData()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="open_upload" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Chọn trung tâm bảo hành?</p>
+            <select class="form-control" [(ngModel)]="tTamIndex">
+              <option *ngFor="let item of tTamBaoHanhList; let i=index" [value]="i">{{item.ten}}</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="triggerFile()">OK</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

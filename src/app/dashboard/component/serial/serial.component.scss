@@ -1,0 +1,51 @@
+.content {
+  width: 100%;
+}
+.pagination{
+  float: right;
+}
+.app-227{
+  margin: 2%;
+}
+.excel{
+  float: right;
+  margin: 3%;
+}.btn-file {
+   position: relative;
+   overflow: hidden;
+ }
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+.loader[_ngcontent-c3] {
+  margin-left: 50%;
+  text-align: center;
+  border: 5px solid gainsboro;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#loader{
+  display: none;
+
+}

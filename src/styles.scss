@@ -1,0 +1,142 @@
+@import './scss/variables';
+@import '../node_modules/bootstrap/scss/bootstrap';
+$fa-font-path: "~font-awesome/fonts";
+@import '~font-awesome/scss/font-awesome';
+
+#app {
+  height: 100vh;
+}
+app-company,app-receipt, app-category,app-product,app-model,app-serial,app-accessories,app-accountant,app-role,app-documents,app-document,app-user{
+  width: 100%;
+}
+.title-app{
+  text-align: center;
+  margin-bottom: 2%;
+
+}
+a{
+  cursor: pointer;
+}
+app-customer,app-receipts,app-issues,app-removals,app-hpcall,app-inventory,app-center,app-station,app-legal,app-cpdl, app-account{
+  width: 100%;
+}
+app-btcsc,app-ttht,app-cause,app-surmount,app-hpcallsn,app-hpcallsy{
+  width: 100%;
+
+}
+.date-picker{
+  position: absolute;
+    visibility: hidden;
+  top: 0px;
+}
+i.arrow-down{
+  background-image: url('./assets/images/caret-down.png');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+i.arrow-up{
+  background-image: url('./assets/images/caret-down.png');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  transform: rotateX(180deg);
+}
+.icon-minize{
+  position: absolute;
+  bottom: 22px; right: 22px;
+  cursor: pointer;
+}
+button{
+  cursor: pointer;
+}
+
+.ui-select-choices.dropdown-menu {
+  display: block !important;
+}
+.ui-select-match .btn-secondary {
+  background: none;
+}
+.ui-select-match .btn-secondary span, .ui-select-match .btn-secondary .dropdown-toggle {
+  color: black;
+}
+.clear {
+  clear: both;
+}
+app-pbhdsc,app-pbhht,app-dspsc, app-inventoryold, app-linhkienxac, app-dscvct{
+  width: 100%;
+}
+.input-write{
+  border: none;
+  padding: 0px 20px;
+  border-bottom: 1px solid #aaa !important;
+  outline: none;
+}
+span.input-write.disabled{
+  border-bottom: none!important;
+  background: #eee;
+}
+.input-write:focus, .payment-info input.form-control.ui-select-search:focus{
+  border-bottom-color: $bg  !important; box-shadow: none  !important;
+}
+.input-write:disabled{
+  background: #eee;
+  border-radius: 2px;
+}
+table .input-write{
+  padding: 0px 5px;
+}
+.payment-info .dropup, .dropdown{
+  display: inline-block; outline: none;
+}
+.payment-info .ui-select-match .btn{
+  outline: 0;
+  border: none;
+  padding: 0px 20px;
+  border-bottom: 1px solid #aaa;
+}
+.payment-info .ui-select-match .btn-secondary .dropdown-toggle{
+  margin-left: 10px; color: #aaa;
+}
+.payment-info input.form-control.ui-select-search, .invoice-wrapper .ui-select-match .btn{
+  border: none;
+  padding: 0px 20px;
+  border-bottom: 1px solid #aaa;
+  outline: none;
+}
+#label-none input.form-control{
+  width: 170px;
+}
+app-pnksc{
+  width: 100%;
+}
+.ui-select-container {
+  width: 100%;
+}
+.receipt-content .ui-select-container,.removal-content .ui-select-container{
+  width: auto;
+}
+.red{
+  color: red;
+  font-weight: 600;
+}
+.btn-mini{
+  font-size: 10px;
+  white-space: nowrap;
+  border: 1px solid $bg;
+  padding: 3px;
+  background: $bg;
+  color: #fff!important;
+}
+.btn-mini.green{
+  background: green;
+  border-color: green;
+}
+.btn-mini.gray{
+  background: gray;
+  border-color: gray;
+}

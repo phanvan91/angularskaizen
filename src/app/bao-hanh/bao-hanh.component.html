@@ -1,0 +1,390 @@
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+    <a href="#home" class="w3-bar-item w3-button">
+      <img src="https://sanaky.com.vn/wp-content/uploads/thegem-logos/logo_68eeabe9dcf7c0a812002e1d6563bfa3_1x.png">
+    </a>
+    <!-- Right-sided navbar links. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="auth/login" class="w3-bar-item w3-button">Login</a>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" id="home">
+    <img class="w3-image" src="http://sanaky.info/Portals/2/bao%20hanh%20sanaky.gif" alt="">
+
+  <div class="w3-display-bottomleft w3-padding-large w3-opacity">
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content">
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-64" id="contact">
+    <h3>Tra cứu thông tin bảo hành</h3><br>
+    <form [formGroup]="SearchSerialForm" (submit)="onSearchSubmit($event)">
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <input type="text" class="form-control" formControlName="key" id="serial" placeholder="Nhập số serial hoặc số điện thoại" >
+        </div>
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary" >Tìm kiếm</button>
+
+        </div>
+
+    </div>
+    </form>
+      <div class="row">
+          <div class="col-md" *ngIf="serial">
+              <div class="row table ttkh"   *ngIf="serial">
+                  <div class="col bold">THÔNG TIN SỐ SERIAL</div>
+              </div>
+              <div class="row table ttkh"   *ngIf="serial">
+                  <div class="col">
+                      <div class="row">
+                          <div class="col-5 bold"> Serial:</div>
+                          <div class="col-7">  {{ serial.serial }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Model:</div>
+                          <div class="col-7"> {{ serial.ten_model }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold"> Sản phẩm:</div>
+                          <div class="col-7">{{ serial.ten_sp }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Ngành hàng:</div>
+                          <div class="col-7">
+                              {{ serial.ten_nganh }}
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Ngày sản xuất:</div>
+                          <div class="col-7">
+                  <span *ngIf=" serial.ngay_san_xuat">
+                       {{ serial.ngay_san_xuat | dateTime }}
+                  </span>
+                              <span *ngIf=" !serial.ngay_san_xuat">
+                       Chưa xác định
+                  </span>
+
+
+
+
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold"> Ngày xuất kho:</div>
+                          <div class="col-7">
+                   <span *ngIf=" serial.ngay_xuat_kho">
+                         {{ serial.ngay_xuat_kho | dateTime }}
+                   </span>
+                              <span *ngIf=" !serial.ngay_xuat_kho">
+                        Chưa xác định
+                   </span>
+
+
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Ngày kích hoạt BH:</div>
+                          <div class="col-7">
+                   <span *ngIf=" serial.ngay_kich_hoat_bh">
+                        {{ serial.ngay_kich_hoat_bh | dateTime }}
+                   </span>
+                              <span *ngIf=" !serial.ngay_kich_hoat_bh">
+                       Chưa xác định
+                   </span>
+
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Ngày hết hạn BH:</div>
+                          <div class="col-7" *ngIf="serial.ngay_het_han | dateTime">
+                <span *ngIf="serial.het_han"  style="color: red;">
+                     <span *ngIf=" serial.ngay_het_han">
+                   {{ serial.ngay_het_han | dateTime }}
+                   </span>
+                   <span *ngIf=" !serial.ngay_het_han">
+                  Chưa xác định
+                   </span>
+
+                </span>
+                              <span *ngIf="!serial.het_han">
+                     <span *ngIf=" serial.ngay_het_han">
+                   {{ serial.ngay_het_han | dateTime }}
+                   </span>
+                 <span *ngIf=" !serial.ngay_het_han">
+                  Chưa xác định
+                   </span>
+                </span>
+                          </div>
+
+                      </div>
+
+                      <div class="row">
+                          <div class="col-5 bold"></div>
+                          <div class="col-7">
+                              <button *ngIf=" !serial.ngay_kich_hoat_bh" (click)="kichhoatSubmit()" type="button" class="btn btn-primary" >
+                                  Kích hoạt bảo hành
+                              </button>
+
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+          <div class="col-md">
+
+              <div class="row table ttkh"   *ngIf="customer">
+                  <div class="col bold">THÔNG TIN KHÁCH HÀNG</div>
+              </div>
+              <div class="row table ttkh"   *ngIf="customer">
+                  <div class="col">
+                      <div class="row">
+                          <div class="col-5 bold"> Tên khách hàng:</div>
+                          <div class="col-7">  {{ customer.ten }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Điện thoại:</div>
+                          <div class="col-7"> {{ customer.dien_thoai }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Email:</div>
+                          <div class="col-7">{{ customer.email }}</div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Địa chỉ:</div>
+                          <div class="col-7">
+                              {{ customer.dia_chi }}
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Tỉnh thành:</div>
+                          <div class="col-7">
+                              {{ thanhPhos[customer.tinh_tp].name }}
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Quận huyện:</div>
+                          <div class="col-7">
+                              {{ quans[customer.quan_huyen].name }}
+
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Phường xã:</div>
+                          <div class="col-7">
+                              {{ villages[customer.phuong_xa].name }}
+
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+              <div class="row table ttkh"   *ngIf="!customer  && serial">
+                  <form [formGroup]="khachHangCreateForm" (submit)="onCreateKhachHangSubmit($event)">
+
+                  <div class="col">
+                      <div class="row">
+                          <div class="col-5 bold"> Tên khách hàng:</div>
+                          <div class="col-7">
+                              <input type="text" class="form-control" placeholder="Nhập họ tên của bạn" formControlName="ten">
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Điện thoại:</div>
+                          <div class="col-7">
+                              <input type="text" placeholder="Nhập số điện thoại" class="form-control" formControlName="dien_thoai" >
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Email:</div>
+                          <div class="col-7">
+                              <input placeholder="Nhập email của bạn" type="text" class="form-control" formControlName="email">
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Địa chỉ:</div>
+                          <div class="col-7">
+                          <input type="text" placeholder="Nhập địa chỉ của bạn" class="form-control" formControlName="dia_chi" >
+                      </div>
+
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Tỉnh thành:</div>
+                          <div class="col-7">
+                              <select2 [width]="200" (valueChanged)="changeCity($event)">
+                                  <option>Lựa chọn tỉnh thành phố</option>
+                                  <option *ngFor="let c of city"
+                                          [value]="c.code">{{c.name}}</option>
+
+
+                              </select2>
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Quận huyện:</div>
+                          <div class="col-7">
+                              <select2 [width]="200" (valueChanged)="changeDictrict($event)">
+                                  <option>Lựa chọn quận huyện</option>
+
+                                  <option *ngFor="let d of dictrict"
+                                          [value]="d.code">{{d.name_with_type}}</option>
+
+
+                              </select2>
+                          </div>
+
+                      </div>
+                      <div class="row">
+                          <div class="col-5 bold">Phường xã:</div>
+                          <div class="col-7">
+                              <select2 [width]="200" (valueChanged)="changeVillage($event)">
+                                  <option>Lựa chọn phường xã</option>
+
+                                  <option *ngFor="let v of village"
+                                          [value]="v.code">{{v.name_with_type}}</option>
+
+                              </select2>
+                          </div>
+
+                      </div>
+
+                      <div class="row">
+                          <div class="col-5 bold"></div>
+                          <div class="col-7">
+                              <button type="submit" class="btn btn-primary" >
+                                  Cập nhật thông tin
+                              </button>
+
+                          </div>
+
+                      </div>
+
+                  </div>
+                  </form>
+              </div>
+
+          </div>
+      </div>
+
+      <div class="row table ttkh"   *ngIf="serial">
+              <div class="col bold">LỊCH SỬ BẢO HÀNH</div>
+      </div>
+      <div  *ngIf="serial" class="row">
+          <div class="col"  *ngIf="PSC.length > 0">
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th scope="col">STT</th>
+                      <th scope="col">Ngày yêu cầu </th>
+                      <th scope="col">Trạng thái</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of PSC; let i = index">
+                      <th scope="row">{{i+1}}</th>
+                      <td>{{item.ngay_tiep_nhan | dateTime}}</td>
+                      <td>{{status[item.status]}}</td>
+                  </tr>
+                  </tbody>
+              </table>
+
+          </div>
+          <div class="col"  *ngIf="!PSC.length">
+              <p>Chưa có phiếu sửa chữa.</p>
+
+          </div>
+      <div  *ngIf="find" class="row">
+          <div class="col">
+              <p>Không tìm thấy thông tin bảo hành tương ứng.</p>
+          </div>
+      </div>
+
+
+
+
+  </div>
+
+      <div class="row table ttkh"   *ngIf="serials">
+          <div class="col bold">Danh sách sản phẩm của bạn</div>
+      </div>
+      <div  *ngIf="serials" class="row">
+          <div class="col"  *ngIf="serials.length > 0">
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th scope="col">Tên sản phẩm </th>
+                      <th scope="col">Kích hoạt BH</th>
+                      <th scope="col">Thao tác</th>
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of serials; let i = index">
+                      <td>{{item.ten_model}}</td>
+                      <td>
+                          <span *ngIf="item.ngay_kich_hoat_bh">
+                             {{item.ngay_kich_hoat_bh | dateTime}}
+                          </span>
+                          <span *ngIf="!item.ngay_kich_hoat_bh">
+                              Chưa xác định
+                          </span>
+                      </td>
+                      <th scope="row"><button type="button" class="btn btn-primary" (click)="chi_tiet_BH(item.serial, i)">Chi tiết bảo hành</button></th>
+
+                  </tr>
+                  </tbody>
+              </table>
+
+          </div>
+          <div class="col"  *ngIf="!serials.length">
+              <p>Bạn chưa có sản phẩm nào tại Sanakyss.</p>
+
+          </div>
+          <div  *ngIf="find" class="row">
+              <div class="col">
+                  <p>Không tìm thấy thông tin bảo hành tương ứng.</p>
+              </div>
+          </div>
+
+
+
+
+      </div>
+
+  <!-- End page content -->
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-light-grey w3-padding-32">
+  <p>2018 © Copyrights Sanaky</p>
+</footer>

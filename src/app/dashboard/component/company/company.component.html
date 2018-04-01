@@ -1,0 +1,262 @@
+<div class="content">
+    <div class="app-227">
+        <h4 class="title-app">Danh Sách Công Ty/Chi Nhánh</h4>
+
+
+        <table class="table table-condensed table-hover ">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Mã công ty</th>
+                <th>Tên công ty</th>
+                <th>Địa chỉ</th>
+                <th>MST</th>
+                <th>Email</th>
+                <th>Web</th>
+                <th>
+                    <a data-toggle="modal" data-target="#add_company">
+                        <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    </a>
+                </th>
+            </tr></thead>
+            <tbody>
+            <tr *ngFor="let item of companies; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.ma }}</td>
+                <td>{{ item.ten }}</td>
+                <td>{{ item.dia_chi }}</td>
+                <td>{{ item.ma_so_thue }}</td>
+                <td>{{ item.email }}</td>
+                <td><a href="{{ item.web }}">{{ item.web }}</a></td>
+
+                <td>
+                    <a data-toggle="modal" data-target="#delete_company" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                    <a data-toggle="modal" data-target="#edit_company" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pagination" *ngIf="total_page.length >1">
+            <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+            <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+            <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+        </ul>
+        <!-- The Modal -->
+        <div class="modal fade" id="add_company">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Thêm công ty</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <form [formGroup]="companyCreateForm" (submit)="onCreateCompanySubmit($event)">
+
+                        <div class="modal-body">
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="id_company">Mã công ty:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="id_company" formControlName="ma">
+                                  <span class="errors" *ngIf="companyCreateForm.get('ma').invalid && companyCreateForm.get('ma').touched">Vui lòng nhập mã công ty</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="name_company">Tên công ty:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="name_company" formControlName="ten">
+                                  <span class="errors" *ngIf="companyCreateForm.get('ten').invalid && companyCreateForm.get('ten').touched">Vui lòng nhập tên công ty</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="addr_company">Địa chỉ:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="addr_company" formControlName="dia_chi">
+                                  <span class="errors" *ngIf="companyCreateForm.get('dia_chi').invalid && companyCreateForm.get('dia_chi').touched">Vui lòng nhập địa chỉ công ty</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="mst_company">Mã số thuế:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="mst_company" formControlName="ma_so_thue">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="mst_company">Email:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="email_company" formControlName="email">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="mst_company">Web:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="web_company" formControlName="web">
+                                  <span class="errors" *ngIf="companyCreateForm.get('web').invalid && companyCreateForm.get('web').touched">Vui lòng nhập website</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="mst_company">Điện thoại:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" formControlName="dien_thoai">
+                                  <span class="errors" *ngIf="companyCreateForm.get('dien_thoai').invalid && companyCreateForm.get('dien_thoai').touched">Vui lòng nhập điện thoại</span>
+                                </div>
+                              </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary" [disabled]="companyCreateForm.invalid">Thêm mới</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="edit_company">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Sửa công ty</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <form [formGroup]="companyEditForm" (submit)="onEditSubmit($event)">
+
+                        <div class="modal-body">
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_id_company">Mã công ty:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_id_company" formControlName="ma">
+                                  <input type="hidden" class="form-control" formControlName="id">
+                                  <span class="errors" *ngIf="companyEditForm.get('ma').invalid && companyEditForm.get('ma').touched">Vui lòng nhập mã công ty</span>
+                                </div>
+                              </div>
+
+
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_name_company">Tên công ty:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_name_company" formControlName="ten">
+                                  <span class="errors" *ngIf="companyEditForm.get('ten').invalid && companyEditForm.get('ten').touched">Vui lòng nhập tên công ty</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_addr_company">Địa chỉ:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_addr_company" formControlName="dia_chi">
+                                  <span class="errors" *ngIf="companyEditForm.get('dia_chi').invalid && companyEditForm.get('dia_chi').touched">Vui lòng nhập địa chỉ</span>
+                                </div>
+                              </div>
+
+
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_mst_company">Mã số thuế:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_mst_company" formControlName="ma_so_thue">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_email_company">Email:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_email_company" formControlName="email">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <label for="edit_web_company">Web:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="edit_web_company" formControlName="web">
+                                  <span class="errors" *ngIf="companyEditForm.get('web').invalid && companyEditForm.get('web').touched">Vui lòng nhập website</span>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal fade" id="delete_company" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>Are you sure?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="onDeleteSubmit()">Yes</button>
+
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

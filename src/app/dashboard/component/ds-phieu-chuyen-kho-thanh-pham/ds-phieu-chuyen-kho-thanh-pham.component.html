@@ -1,0 +1,91 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách phiếu chuyển kho thành phẩm</h4>
+    <div class="row filter-ds">
+      <form class="form-inline" (submit)="onSearch()">
+        <div class="form-group">
+            <label class="" for="startDate">Từ ngày</label>
+            <input type="text" class="input-write" id="startDate" bsDatepicker [(bsValue)]="searchForm.ngay_bat_dau"
+                  placeholder="Start date" value="{{searchForm.ngay_bat_dau | date: 'dd/MM/yyyy' }}">
+            <label class="" for="endDate">Đến ngày</label>
+            <input type="text" class="input-write" id="endDate" bsDatepicker [(bsValue)]="searchForm.ngay_ket_thuc"
+                  placeholder="End date" value="{{searchForm.ngay_ket_thuc | date: 'dd/MM/yyyy' }}">
+          </div>
+          <button  class="btn btn-primary" style="margin-left: 20px;"><i class="fa fa-search"></i> Lọc danh sách</button>
+      </form>
+    </div>
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Ngày lập CT</th>
+        <th>Người lập</th>
+        <th>Kho xuất</th>
+        <th>Kho nhận</th>
+        <th>Diễn giải</th>
+        <th>Trạng thái</th>
+
+        <th>
+          <a href="/#/dashboard/removal">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+        <tr *ngFor="let item of chungTuList; let i=index" class="ng-scope" (dblclick)="openRemoval(item.id)">
+          <td class="ng-binding">{{i+1}}</td>
+          <td class="ng-binding">{{item.ngay_ct | dateTime}}</td>
+          <td class="ng-binding">{{item.nguoi_tao.name}}</td>
+
+          <td class="ng-binding">{{item.kho_xuat.ten_kho}}</td>
+          <td>{{item.kho_nhap.ten_kho}}</td>
+          <td></td>
+          <td>{{item.trang_thai}}</td>
+          <td class="ng-binding">
+            <a routerLink="/dashboard/removal"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+          </td>
+        </tr>
+        <tr *ngIf="chungTuList&&!chungTuList.length">
+          <td colspan="8" style="text-align:center">
+            Không tìm thấy kết quả
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="chungTuPagination&&chungTuList.length">
+      <li class="page-item"><a class="page-link" (click)="goToPageFirst()">Đầu tiên</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPagePrev()">Trước</a></li>
+      <li class="page-item"><a class="page-link" >{{chungTuPagination.current_page}}</a></li>
+      <li class="page-item" *ngIf="chungTuPagination.current_page<chungTuPagination.last_page">
+        <a class="page-link" (click)="goToPageNext()">{{chungTuPagination.current_page+1| number}}</a>
+      </li>
+      <li class="page-item" *ngIf="chungTuPagination.current_page<chungTuPagination.last_page">
+        <a class="page-link" >...</a>
+      </li>
+      <li class="page-item" *ngIf="chungTuPagination.current_page<chungTuPagination.last_page">
+        <a class="page-link" (click)="goToPageLast()">{{chungTuPagination.last_page}}</a>
+      </li>
+      <li class="page-item"><a class="page-link" (click)="goToPageNext()">Tiếp</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPageLast()">Cuối cùng</a></li>
+  </ul>
+
+    <div class="modal fade" id="delete_document" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

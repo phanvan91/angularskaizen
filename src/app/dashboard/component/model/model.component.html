@@ -1,0 +1,172 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh Sách Model</h4>
+
+    <div class="excel">
+      <form>
+        <a  class="btn btn-default btn-file">
+    <i class="fa fa-upload" aria-hidden="true"></i> Upload từ csv <input id="file" (change)="importPortfolioFunction()" type="file">
+    </a>
+        <a id="download" (click)="export_excel_dslk()"> <i  class="fa fa-download" aria-hidden="true"></i> Xuất excel</a>
+      </form>
+    </div>
+    <table id="table-access" class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr><th>Model No.</th>
+        <th>Tên máy</th>
+        <th>Nhóm sản phẩm</th>
+        <th>Trạng thái</th>
+        <th>
+          <a data-toggle="modal" data-target="#add_model">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+      <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of Models; let i = index">
+        <td class="ng-binding">{{item.ma}}</td>
+        <td class="ng-binding">{{item.ten}}</td>
+        <td class="ng-binding">
+          <ng-container *ngFor="let sp of SanPham">
+            <ng-container *ngIf="sp.id == item.san_pham_id">
+              {{sp.ten}}
+            </ng-container>
+          </ng-container>
+        </td>
+        <td class="ng-binding" *ngIf="item.kich_hoat==1;else other_content">Kích hoạt</td>
+        <ng-template #other_content>
+          <td class="ng-binding">Không kích hoạt</td>
+        </ng-template>
+        <td class="ng-binding">
+          <a data-toggle="modal" data-target="#delete_model" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_model" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+    <div class="loader" id="loader"></div>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+
+      <li class="page-item"  *ngFor="let p of total_page" ><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+
+    <!-- The Modal -->
+    <div class="modal fade" id="add_model">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Thêm model</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="modelCreateForm" (submit)="onCreateModelSubmit($event)">
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="id_model">Model No.:</label>
+                <input type="text" class="form-control" id="id_model" formControlName="ma">
+                <span class="errors" *ngIf="modelCreateForm.get('ma').invalid && modelCreateForm.get('ma').touched">Vui lòng nhập model</span>
+              </div>
+              <div class="form-group">
+                <label for="name_model">Tên máy:</label>
+                <input type="text" class="form-control" id="name_model" formControlName="ten">
+                <span class="errors" *ngIf="modelCreateForm.get('ten').invalid && modelCreateForm.get('ten').touched">Vui lòng nhập tên máy</span>
+              </div>
+              <div class="form-group">
+                <label>Nhóm Sản phẩm:</label>
+                <select name="product" class="list_product" class="form-control" formControlName="san_pham_id">
+                  <option *ngFor="let product of SanPham"
+                          [value]="product.id">{{product.ten}}</option>
+                </select>
+                <span class="errors" *ngIf="modelCreateForm.get('san_pham_id').invalid && modelCreateForm.get('san_pham_id').touched">Vui lòng lựa chọn nhóm sản phẩm</span>
+              </div>
+              <div class="form-group">
+                <label>Trạng thái:</label>
+                <select class="list_cat" class="form-control" formControlName="kich_hoat" [(ngModel)]="select">
+                  <option value="0">Không kích hoạt</option>
+                  <option value="1" >Kích hoạt</option>
+                </select>
+
+              </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="edit_model">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Sửa model</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <form [formGroup]="modelEditForm" (submit)="onEditSubmit($event)">
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Model No.:</label>
+                <input type="text" class="form-control" id="edit_id_model" formControlName="ma">
+                <span class="errors" *ngIf="modelEditForm.get('ma').invalid && modelEditForm.get('ma').touched">Vui lòng nhập model</span>
+              </div>
+              <div class="form-group">
+                <label>Tên máy:</label>
+                <input type="text" class="form-control" id="edit_name_model" formControlName="ten">
+                <span class="errors" *ngIf="modelEditForm.get('ten').invalid && modelEditForm.get('ten').touched">Vui lòng nhập tên máy</span>
+              </div>
+              <div class="form-group">
+                <label>Sản phẩm:</label>
+                <select name="product" class="list_product" class="form-control" formControlName="san_pham_id">
+                  <option *ngFor="let product of SanPham"
+                          [value]="product.id">{{product.ten}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Trạng thái:</label>
+                <select class="list_cat" class="form-control" formControlName="kich_hoat">
+                  <option value="0">Không kích hoạt</option>
+                  <option value="1">Kích hoạt</option>
+                </select>
+              </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="delete_model" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Bạn có chắc muốn xóa Model này không?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onDeleteSubmit()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

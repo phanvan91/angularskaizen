@@ -1,0 +1,141 @@
+<div class="content">
+  <div class="app-227">
+    <div class="container">
+      <h4 class="title-app">Tạo Phiếu Nhập Kho Sửa Chữa</h4>
+
+      <div class="row color-invoice">
+
+        <div class="col-md-12">
+
+          <div class="row">
+
+            <div class="col">
+              <select2 [width]="300" [options]="options_kh" (valueChanged)="onChangeValue($event,'khachhang')"></select2>
+              <app-add-customer (khachHangAdded)="KhachHang = $event"></app-add-customer>
+
+
+            </div>
+          </div>
+          <div class="row table ttkh margin-top" *ngIf="KhachHang">
+            <div class="col-5 bold"><b>THÔNG TIN KHÁCH HÀNG</b></div>
+            <div  class="col-7"></div>
+          </div>
+          <div class="row table ttkh"   *ngIf="KhachHang">
+            <div class="col">
+              <div class="row">
+                <div class="col-5 bold">Tên:</div>
+                <div class="col-7"> {{ KhachHang.ten }}</div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Điện thoại:</div>
+                <div class="col-7"> {{ KhachHang.dien_thoai }}</div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Email:</div>
+                <div class="col-7"> {{ KhachHang.email }}</div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Loại KH:</div>
+                <div class="col-7">
+                  <span class="ng-binding" *ngIf="KhachHang.loai==1;else other_content_loai">Khách lẻ</span>
+                  <ng-template #other_content_loai>
+                    <span class="ng-binding">Khách sỉ</span>
+                  </ng-template>
+                </div>
+
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <div class="col-5 bold">Tỉnh/Thành phố:</div>
+                <div class="col-7"> <span>
+                 {{ city[KhachHang.tinh_tp].name }}
+              </span></div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Quận/huyện:</div>
+                <div class="col-7">
+                <span>
+                 {{ dictrict[KhachHang.quan_huyen].name }}
+              </span>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Phường xã:</div>
+                <div class="col-7"> <span *ngIf="village">
+                 {{ village[KhachHang.phuong_xa].name }}
+              </span></div>
+
+              </div>
+              <div class="row">
+                <div class="col-5 bold">Địa chỉ:</div>
+                <div class="col-7">{{ KhachHang.dia_chi }}</div>
+
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+
+            <div class="col">
+              <select2 [width]="300" [options]="options_serial" (valueChanged)="onChangeValue($event,'serial')"></select2>
+              <app-serial-create (serialAdded)="Serials.push($event)"></app-serial-create>
+
+
+            </div>
+          </div>
+          <hr>
+
+          <div class="row" *ngIf="Serials.length >0">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Serial</th>
+                    <th>Model</th>
+                    <th>Sản Phẩm</th>
+                    <th>Ngày hết hạn BH</th>
+                    <th>Tình trạng hư hỏng</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="item in data" class="ng-scope"  *ngFor="let item of Serials; let i = index">
+                    <td>{{item.serial}}</td>
+                    <td>{{item.ten_model}}</td>
+                    <td>{{item.ten_sp}}</td>
+                    <td>{{item.ngay_het_han}}</td>
+                    <td>
+                      <select2 [width]="200"  [options]="options_tthh" (valueChanged)="onChangeValue($event,'tthh',i)">
+
+                      </select2>
+                    </td>
+
+                    <td><a title="Xóa khỏi danh sách" (click)="delete_row(i)"><i class="fa fa-trash-o" aria-hidden="true"></i></a></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <button type="button" class="btn btn-success btn-sm" (click)="create_phieu_nhap_kho()">Tạo Danh Sách Phiếu Nhập Kho</button>    
+            </div>
+          </div>
+
+          <div class="row">
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

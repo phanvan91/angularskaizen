@@ -1,0 +1,439 @@
+<script src="issue.component.ts"></script>
+<div class="content">
+  <div class="app-227">
+    <div class="receipt-content">
+      <div id="full-width" class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="invoice-wrapper">
+              <div class="intro">
+                <div class="form-group">
+                  <label>Loại chứng từ:</label>
+                  <select [disabled]="isInDisplayMode" [compareWith]="byId" class="input-write" [ngModel]="issue.loai_chung_tu"  (ngModelChange)="changeLoaiChungTu($event)" [ngModelOptions]="{standalone: true}">
+                    <option  *ngFor="let i of data_ct"  [ngValue]="i" >{{i.ten_chung_tu}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="receipt-title">
+                <h4>{{isKhoTot?'PHIẾU XUẤT KHO' : 'PHIẾU XUẤT KHO XÁC'}}</h4>
+                <label>Ngày lập phiếu*:</label>
+                <input type="text" [disabled]="isInDisplayMode || issue.id" class="input-write"
+                       [bsConfig]="bsConfig"
+                       bsDatepicker [(bsValue)]="issue.ngay_ct">
+                <div class="form-group">
+                  <label>Số chứng từ:</label>
+                  <span *ngIf="issue && issue.ngay_ct">{{'PXK/'+getDayMonth(issue.ngay_ct)+'/'+getTwoNumber(issue.so_ct)}}</span>
+                </div>
+              </div>
+              <div class="payment-info">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Mã chứng từ:</label>
+                      <span *ngIf="issue.loai_chung_tu">{{issue.loai_chung_tu.so_hieu_chung_tu}}</span>
+                    </div>
+                    <div class="form-group" *ngIf="issue.phieu_sua_chua">
+                      <label>Phiếu bảo hành:</label>
+                      <a>issue.phieu_sua_chua.id</a>
+                    </div>
+                  </div>
+                  <app-accountant-create></app-accountant-create>
+                  <app-legal-create></app-legal-create>
+
+                  <div class="col-sm-6 text-right">
+                    <div class="row">
+                      <div class="form-group">
+                        <label style="width: 110px;text-align: left;">Tài khoản nợ:</label>
+                        <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_tkkt" (valueChanged)="changeTaiKhoanNo($event)">
+                          <option *ngIf="issue && issue.tk_no">{{issue.tk_no.text}}</option>
+                        </select2>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group">
+                        <label style="width: 110px;text-align: left;">Đối tượng nợ:</label>
+                        <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_dtpn" (valueChanged)="changeDoiTuongNo($event)">
+                          <option *ngIf="issue && issue.doi_tuong_no">{{issue.doi_tuong_no.text}}</option>
+                        </select2>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Họ tên người nhận:</label>
+                      <input [disabled]="isInDisplayMode" class="input-write" type="text" [(ngModel)]="issue.ten_nguoi_nhan" style="width:60%"  [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="form-group">
+                      <label>Địa chỉ:</label>
+                      <input [disabled]="isInDisplayMode" class="input-write" type="text" [(ngModel)]="issue.dia_chi" style="width:78%" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="form-group">
+                      <label>Số điện thoại:</label>
+                      <input [disabled]="isInDisplayMode" class="input-write" type="text" [(ngModel)]="issue.so_dt" style="width: 67%" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6 text-right">
+                    <div class="row">
+                      <div class="form-group">
+                        <label style="width: 110px;text-align: left;">Tài khoản có:</label>
+                        <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_tkkt" (valueChanged)="changeTaiKhoanCo($event)">
+                          <option *ngIf="issue && issue.tk_co">{{issue.tk_co.text}}</option>
+                        </select2>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group">
+                        <label style="width: 110px;text-align: left;">Đối tượng có:</label>
+                        <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_dtpn" (valueChanged)="changeDoiTuongCo($event)">
+                          <option *ngIf="issue && issue.doi_tuong_co">{{issue.doi_tuong_co.text}}</option>
+                        </select2>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" id="recept-address" style="margin-bottom: 30px">
+                  <div class="col ">
+                    <label>Xuất tại kho:</label>
+                    <span *ngIf="issue.kho_xuat" > {{issue.kho_xuat.ten_kho}}</span>
+                  </div>
+                  <div class="col ">
+                    <label>Địa chỉ:</label>
+                    <span *ngIf="issue.kho_xuat">{{issue.kho_xuat.dia_chi}}</span>
+                  </div>
+                </div>
+                <div class="row label-none"  *ngIf="!isInDisplayMode && !issue.id" style="
+                border-top: 1px solid #0aa0f6;
+                padding-top: 20px;">
+                  <div class="col-4" style="padding: 0px;">
+                    <span><b>Mã Linh kiện:</b></span>
+                    <select2 [width]="200" [options]="options_lk" (valueChanged)="changeLinhKien($event)">
+                      <option *ngIf="linhKienAdd && linhKienAdd.linh_kien">{{linhKienAdd.linh_kien.ma + '-' + linhKienAdd.linh_kien.ten}}</option>
+                    </select2>
+                  </div>
+                  <div class="col-8">
+                    <button type="button" class="btn btn-secondary" [disabled]="isInDisplayMode" (click)="themLinhKien();">Thêm vào danh sách</button>
+                  </div>
+                </div>
+                <div class="row label-none" *ngIf="!isInDisplayMode && !issue.id" style="
+                  border-bottom: 1px solid #0aa0f6;
+                  padding-bottom: 20px;" >
+                  <div class="col">
+                    <label>Tồn ko:</label>
+                    {{linhKienAdd && linhKienAdd.linh_kien && linhKienAdd.linh_kien.ton_cuoi?linhKienAdd.linh_kien.ton_cuoi:0}}
+                  </div>
+                  <div class="col">
+                    <label>SL yêu cầu:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 30%;" min="1" type="number" [(ngModel)]="linhKienAdd.so_luong_yc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+
+                  <div class="col">
+                    <label>SL thực nhập:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 30%;" min="1" type="number" [(ngModel)]="linhKienAdd.so_luong_thuc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col">
+                    <label>Đơn giá:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 50%;" type="number" [(ngModel)]="linhKienAdd.don_gia"  [ngModelOptions]="{standalone: true}">
+                  </div>
+
+                </div>
+                <!-- <div id="add-receipt" *ngIf="!isInDisplayMode && !issue.id">
+                </div> -->
+
+                <div class="payment-details">
+
+                  <div class="line-items">
+
+                    <table id="table-receipt" class="table table-condensed-extra table-hover">
+                      <thead>
+                      <tr class="top-headers">
+                        <th>STT</th>
+                        <th id="width-300">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm, hàng hóa</th>
+                        <th>Mã VT</th>
+                        <th>ĐVT</th>
+                        <th colspan="2" >Số lượng</th>
+                        <th style="width: 95px;" *ngIf="!issue || !issue.id">Tồn kho</th>
+                        <th style="width: 95px;">Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th style="width: 200px;">Ghi chú</th>
+                      </tr>
+                      <tr class="top-headers">
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+                        <th class="border-colspan">Yêu cầu</th>
+                        <th class="border-colspan">Thực xuất</th>
+                        <th style="border-top: 0;" *ngIf="!issue || !issue.id"></th>
+                        <th style="border-top: 0;"></th>
+                        <th style="border-top: 0;"></th>
+                        <th style="border-top: 0;"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let lk of issue.linh_kiens; let i = index;" >
+                        <td>{{i+1}}</td>
+                        <td>{{lk.linh_kien.ten}}</td>
+                        <td>{{lk.linh_kien.ma}}</td>
+                        <td>{{lk.linh_kien.don_vi}}</td>
+                        <td>{{lk.so_luong_yc}}</td>
+                        <td><input class="input-write" style="width:50px;" [disabled]="isInDisplayMode || issue.id" type="number" min="1" [ngModel]="lk.so_luong_thuc| number:'1.0-2'" (change)="onChangeSoLuongThuc(i,$event);" [ngModelOptions]="{standalone: true}">
+                        </td>
+                        <td *ngIf="!issue || !issue.id">{{lk.linh_kien.ton_cuoi}}</td>
+                        <td>{{lk.don_gia |number:'1.0-2'}}</td>
+                        <td>{{lk.so_luong_thuc * lk.don_gia |number:'1.0-2'}}</td>
+                        <td> <input type="text" class="input-write"  [disabled]="isInDisplayMode || issue.id" [(ngModel)]="lk.ghi_chu"  [ngModelOptions]="{standalone: true}"></td>
+                        <td class="border-none" *ngIf="!isInDisplayMode && !issue.id">
+                          <a data-toggle="modal" data-target="#delete_linh_kien" (click)="onXoaLinhKienClick(i);"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                        </td>
+                      </tr>
+                      </tbody>
+                      <tfoot>
+                      <tr>
+                        <td [colSpan]="!issue || !issue.id?8:7"><strong>Tổng trước thuế</strong></td>
+                        <td>{{issue.tong_so_tien_truoc_thue|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td [colSpan]="!issue || !issue.id?7:6"><strong>Thuế</strong></td>
+                        <td style="text-align: right"> <input class="input-write" [disabled]="isInDisplayMode" style="width: 50px;" type="number" max="100" [(ngModel)]="issue.phan_tram_thue"  [ngModelOptions]="{standalone: true}">%</td>
+                        <td>
+                          {{(issue.tong_so_tien_truoc_thue * issue.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td [colSpan]="!issue || !issue.id?8:7"><strong>Tổng sau thuế</strong></td>
+                        <td>{{(issue.tong_so_tien_truoc_thue * (1 + issue.phan_tram_thue/100))|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      </tfoot>
+                    </table>
+                    <div id="action-receip">
+                      <div  (click)="print()" id="print" class="print">
+                        <a>
+                          <i class="fa fa-print"></i>
+                          In danh sách
+                        </a>
+                      </div>
+                      <div id="save" class="print" *ngIf="!isInDisplayMode">
+                        <a  (click)="onSaveClick();">
+                          <i class="fa fa-floppy-o"></i>
+                          Lưu lại
+                        </a>
+                      </div>
+                      <div id="delete" class="print" *ngIf="isInDisplayMode && issue.id">
+                        <a data-toggle="modal" data-target="#delete_receipt" >
+                          <i class="fa fa-floppy-o"></i>
+                          Xóa phiếu
+                        </a>
+                      </div>
+                      <div id="edit" class="print" *ngIf="isInDisplayMode && allowEdit">
+                        <a  (click)="onEditClick();">
+                          <i class="fa fa-floppy-o"></i>
+                          Sửa
+                        </a>
+                      </div>
+                      <div id="close" class="print">
+                        <a (click)="close();">
+                          <i class="fa fa-window-close-o"></i>
+                          Đóng
+                        </a>
+                        <div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="footer">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="delete_linh_kien" role="dialog">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>Are you sure?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="xoaLinhKien();">Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="delete_receipt" role="dialog">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>Bạn muốn xóa phiếu này?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="deleteReceipt();">Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: none;"  id="receipt-print" class="receipt-content" *ngIf="issue.id">
+        <div class="container bootstrap snippet">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="invoice-wrapper">
+                <div class="payment-info">
+                  <div class="row">
+                    <div class="col-6">
+                      <strong>{{issue.congty.ten}}</strong>
+                      <p>{{issue.congty.dia_chi}}</p>
+                    </div>
+                    <div class="col-6 text-right">
+                      <strong>Mẫu số: 01-VT</strong>
+                      <p>(Ban hành theo TT số 200/2014/TT-BTC <br>ngày 22/12/2014 của BTC)</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="issue-title">
+                  <h4>{{isKhoTot?'PHIẾU XUẤT KHO' : 'PHIẾU XUẤT KHO XÁC'}}</h4>
+                  <p>Ngày <span>{{issue.ngay_ct.getDate()}}</span> tháng <span>{{issue.ngay_ct.getMonth()+1}}</span>
+                    năm <span>{{issue.ngay_ct.getFullYear()}}</span>.</p>
+                  <p>Số chứng từ: {{'PNK/'+getDayMonth(issue.ngay_ct)+'/'+getTwoNumber(issue.so_ct)}}</p>
+                </div>
+                <div class="payment-info">
+                  <div class="row">
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6 text-right">
+                      <p><label>Nợ TK:</label> <span *ngIf="issue.tk_no">{{issue.tk_no.text}}</span></p>
+                      <p><label>Có TK:</label> <span *ngIf="issue.tk_co">{{issue.tk_co.text}}</span></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <p><label>Mã chứng từ: <span *ngIf="issue.loai_chung_tu">{{issue.loai_chung_tu.so_hieu_chung_tu}}</span></label></p>
+                      <p class="p-bold" *ngIf="issue.don_dat_hang">Đơn đặt hàng số: <span>DDH/ddmm/…..</span></p>
+                      <p>Họ và tên người nhận: <span>{{issue.ten_nguoi_nhan}}</span></p>
+                      <p>Địa chỉ: <span>{{issue.dia_chi}}</span></p>
+                      <p>Số điện thoại: <span>{{issue.so_dt}}</span></p>
+
+                      <!-- <p>Theo chứng từ gốc: <span>{{issue.so_ct_goc}}</span>
+                         <span *ngIf="issue.ngay_ct_goc">
+                       {{'ngày '+ issue.ngay_ct_goc.getDate() +' tháng '+(issue.ngay_ct_goc.getMonth() +1) + ' năm '+
+                         issue.ngay_ct_goc.getFullYear()}}</span>
+                         <span *ngIf="issue.don_vi_ct_goc">{{'của '+ issue.don_vi_ct_goc}}</span>
+                       </p>
+                       <p> Nhập tại kho: <span>{{issue.kho_nhap.ten}}</span>, địa điểm: <span> {{issue.kho_nhap.dia_chi}}</span></p>-->
+                      <p> Xuất tại kho: <span>{{issue.kho_nhap.ten_kho}}</span>, địa điểm: <span> {{issue.kho_nhap.dia_chi}}</span></p>
+
+                    </div>
+                    <div class="col-sm-6 text-right">
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="payment-details">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="table-responsive">
+                        <table class="table-print table table-striped table-bordered table-hover">
+                          <thead>
+                          <tr>
+                            <th>STT</th>
+                            <th style="width: 250px;">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm, hàng hóa</th>
+                            <th>Mã VT</th>
+                            <th>ĐVT</th>
+                            <th colspan="2" >Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                          </tr>
+                          <tr>
+                            <th class="border-top-none"></th>
+                            <th class="border-top-none"></th>
+                            <th class="border-top-none"></th>
+                            <th class="border-top-none"></th>
+                            <th class="border-colspan">Yêu cầu</th>
+                            <th class="border-colspan">Thực xuất</th>
+                            <th style="border-top: 0;"></th>
+                            <th style="border-top: 0;"></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let lk of issue.linh_kiens; let i = index;" >
+                            <td>{{i+1}}</td>
+                            <td>{{lk.linh_kien.ten}}</td>
+                            <td>{{lk.linh_kien.ma}}</td>
+                            <td>{{lk.linh_kien.don_vi}}</td>
+                            <td>{{lk.so_luong_yc | number:'1.0-2'}}</td>
+                            <td>{{lk.so_luong_thuc| number:'1.0-2'}}</td>
+                            <td>{{lk.don_gia |number:'1.0-2'}}</td>
+                            <td>{{lk.so_luong_thuc * lk.don_gia |number:'1.0-2'}}</td>
+                          </tr>
+                          </tbody>
+                          <tfoot>
+                          <tr>
+                            <td colspan="7"><strong>Tổng</strong></td>
+                            <td >{{issue.tong_so_tien_truoc_thue |number:'1.0-2'}}</td>
+                          </tr>
+                          <tr  *ngIf="issue.phan_tram_thue > 0">
+                            <td colspan="7"><strong>Thuế</strong></td>
+                            <td > {{(issue.tong_so_tien_truoc_thue * issue.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                          </tr>
+                          <tr  *ngIf="issue.phan_tram_thue > 0">
+                            <td colspan="7"><strong>Tổng sau thuế</strong></td>
+                            <td>{{(issue.tong_so_tien_truoc_thue +issue.tong_so_tien_truoc_thue * issue.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                          </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+
+                      <div class="ttl-amts">
+                        - Tổng số tiền viết bằng chữ:……………………………………………………………………………………………………..
+                        <div class="ttl-amts">
+                          - Số chứng từ gốc kèm theo:…………………………………………………………………………………………………….
+                        </div>
+                      <br>
+                      <div class="ttl-amts">
+                        <p class="amts-right">Ngày<span>&nbsp;{{today.getDate()}}</span><span>&nbsp;tháng&nbsp;</span><span>{{today.getMonth()+1}}</span>&nbsp;năm
+                          <span>{{today.getFullYear()}}</span>.</p>
+                      </div>
+                      <div class="ttl-amts">
+                        <div  class="row">
+                          <div class="col-4"><b>Người nhận hàng</b></div>
+                          <div class="col-4"><b>Thủ kho</b></div>
+                          <div class="col-4"><b>Người lập phiếu</b></div>
+                        </div>
+                      </div>
+                      <br>
+                      <br>
+                      <br>
+                      <div class="ttl-amts">
+                        <div id="last-row" class="row">
+                          <div class="col-4">{{issue.ten_nguoi_nhan}}</div>
+                          <div class="col-4"><b>Thủ kho</b></div>
+                          <div class="col-4">{{issue.nguoi_tao.name}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,26 @@
+.content {
+  width: 100%;
+}
+.pagination{
+  float: right;
+}
+.app-227{
+  margin: 2%;
+}
+.excel input[type=file] {
+  opacity: 1;
+  cursor: inherit;
+  display: none;
+}
+.excel{
+  float: right;
+  margin: 3%;
+}
+.btn-file {
+   position: relative;
+   overflow: hidden;
+}
+
+.errors{color:#dc3545;font-size:90%;}
+input.ng-touched.ng-invalid{border-color: #dc3545;box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);}
+select.ng-touched.ng-invalid{border-color: #dc3545;box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);}

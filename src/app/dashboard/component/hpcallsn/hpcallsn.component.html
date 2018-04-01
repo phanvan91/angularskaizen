@@ -1,0 +1,114 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh Sách Happy Call Chưa Thực Hiện</h4>
+
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>Mã PBH</th>
+        <th>Serial</th>
+        <th>Tên KH</th>
+        <th>Số ĐT</th>
+        <th>Ngày bắt đầu BH</th>
+        <th>Ngày hoàn thành BH</th>
+        <th>Trạng thái Happy Call</th>
+        <th>Thao tác</th>
+      </tr></thead>
+      <tbody>
+      <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of HpCall; let i = index" >
+        <td class="ng-binding">{{item.phieu_sua_chua_id}}</td>
+        <td class="ng-binding">{{item.serial}}</td>
+        <td class="ng-Obinding">{{item.ten}}</td>
+        <td class="ng-Obinding">{{item.dien_thoai}}</td>
+        <td class="ng-Obinding">{{item.ngay_kich_hoat_bh}} </td>
+        <td class="ng-Obinding">{{item.ngay_het_han}}</td>
+        <td class="ng-Obinding">Chưa thực hiện</td>
+        <td class="ng-binding">
+          <a data-toggle="modal" data-target="#edit_hpcallsn"  (click)="ActionIndex = i"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+      <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+    <!-- The Modal -->
+    <div class="modal fade" id="edit_hpcallsn">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Bảng thăm dò ý kiến khách hàng</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+            <form role="form" (submit)="hpCallSubmit($event)">
+
+            <div class="modal-body">
+              <div class="container">
+                  <div class="group-cau-hoi" *ngFor="let item_cauhoi of cauhoi; let a = index">
+                    <div class="row">
+                      <div class="col-12">
+                        <b>Câu {{a +1}}:</b> {{item_cauhoi.cau_hoi}}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12" *ngIf="item_cauhoi.loai==1;else other_content">
+                        <div class="checkbox checkbox-primary">
+                          <input id="check-1-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}" class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                          <label for="check-1-{{item_cauhoi.id}}">
+                            Hài lòng
+                          </label>
+                        </div>
+                        <div class="checkbox checkbox-primary">
+                            <input id="check-2-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                            <label for="check-2-{{item_cauhoi.id}}">
+                            Không hài lòng
+                          </label>
+                        </div>
+                        <div class="checkbox checkbox-primary">
+                            <input id="check-3-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                            <label for="check-3-{{item_cauhoi.id}}">
+                            Bình thường
+                          </label>
+                        </div>
+                        <div class="checkbox checkbox-primary">
+                          <input (change)="show_box($event)" value="{{item_cauhoi.id}}" id="check-4-{{item_cauhoi.id}}" class="myCheckbox-{{item_cauhoi.id}}" type="checkbox" (click)="selectOnlyThis($event)">
+                          <label for="check-4-{{item_cauhoi.id}}">
+                            Ý kiến khác
+                          </label>
+                        </div>
+                        <textarea rows="1" id="note-hpcall-{{item_cauhoi.id}}" class="note-hpcall" placeholder="Nhập ý kiến của khách hàng"></textarea>
+
+                      </div>
+                      <ng-template #other_content>
+                        <div class="col-12">
+                          <textarea id="cautraloi-{{item_cauhoi.id}}" rows="1" placeholder="Nhập câu trả lời của khách hàng"></textarea>
+
+                        </div>
+                      </ng-template>
+                    </div>
+                    <hr>
+                  </div>
+              </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

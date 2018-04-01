@@ -1,0 +1,449 @@
+<script src="receipt.component.ts"></script>
+<div class="content">
+  <div class="app-227">
+    <div class="receipt-content">
+      <div id="full-width" class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="invoice-wrapper">
+              <div class="intro">
+                <div class="form-group">
+                  <label>Loại chứng từ:</label>
+                  <select [disabled]="isInDisplayMode" [compareWith]="byId" class="input-write" [ngModel]="receipt.loai_chung_tu"  (ngModelChange)="changeLoaiChungTu($event)" [ngModelOptions]="{standalone: true}">
+                    <option  *ngFor="let i of data_ct"  [ngValue]="i" >{{i.ten_chung_tu}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="receipt-title">
+                <h4>{{isKhoTot?'PHIẾU NHẬP KHO' : 'PHIẾU NHẬP KHO XÁC'}}</h4>
+                <label>Ngày lập phiếu*:</label>
+                <input type="text" [disabled]="isInDisplayMode || receipt.id" class="input-write"
+                       [bsConfig]="bsConfig"
+                       bsDatepicker [(bsValue)]="receipt.ngay_ct">
+                <div class="form-group">
+                  <label>Số chứng từ:</label>
+                  <span *ngIf="receipt && receipt.ngay_ct">{{'PNK/'+getDayMonth(receipt.ngay_ct)+'/'+getTwoNumber(receipt.so_ct)}}</span>
+                </div>
+              </div>
+              <div class="payment-info">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Mã chứng từ:</label>
+                      <span *ngIf="receipt.loai_chung_tu">{{receipt.loai_chung_tu.so_hieu_chung_tu}}</span>
+                    </div>
+                    <div class="form-group">
+                      <label>Đơn đặt hàng số:</label>
+                      <select2 [width]="200" [disabled]="isInDisplayMode || receipt.id"  [options]="options_ddh" (valueChanged)="changeDonDatHang($event)">
+                        <option *ngIf="receipt.don_dat_hang">{{receipt.don_dat_hang.so_ct}}</option>
+                      </select2>
+                    </div>
+                  </div>
+                  <app-accountant-create></app-accountant-create>
+                  <app-legal-create></app-legal-create>
+
+                  <div class="col-sm-6 text-right">
+                    <div class="row">
+                        <div class="form-group">
+                          <label style="width: 110px;text-align: left;">Tài khoản nợ:</label>
+                          <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_tkkt" (valueChanged)="changeTaiKhoanNo($event)">
+                            <option *ngIf="receipt && receipt.tk_no">{{receipt.tk_no.text}}</option>
+                          </select2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label style="width: 110px;text-align: left;">Đối tượng nợ:</label>
+                          <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_dtpn" (valueChanged)="changeDoiTuongNo($event)">
+                            <option *ngIf="receipt && receipt.doi_tuong_no">{{receipt.doi_tuong_no.text}}</option>
+                          </select2>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Họ tên người nhận:</label>
+                      <input [disabled]="isInDisplayMode" class="input-write" type="text" [(ngModel)]="receipt.ten_nguoi_nhan"  [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="form-group">
+                      <label>Họ tên người giao:</label>
+                      <input [disabled]="isInDisplayMode" class="input-write" type="text" [(ngModel)]="receipt.ten_nguoi_giao"  [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6 text-right">
+                    <div class="row">
+                        <div class="form-group">
+                          <label  style="width: 110px;text-align: left;">Tài khoản có:</label>
+                          <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_tkkt" (valueChanged)="changeTaiKhoanCo($event)">
+                            <option *ngIf="receipt && receipt.tk_co">{{receipt.tk_co.text}}</option>
+                          </select2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                          <label  style="width: 110px; text-align: left;">Đối tượng có:</label>
+                          <select2 [width]="200" [disabled]="isInDisplayMode" [options]="options_dtpn" (valueChanged)="changeDoiTuongCo($event)">
+                            <option *ngIf="receipt && receipt.doi_tuong_co">{{receipt.doi_tuong_co.text}}</option>
+                          </select2>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row" id='info_ct'>
+                  <div class="col-3">
+                    <label>Theo chứng từ gốc số:</label>
+                    <input [disabled]="isInDisplayMode" class="input-write" style="width: 40px;" type="text" [(ngModel)]="receipt.so_ct_goc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col">
+                    <label>Ngày chứng từ gốc:</label>
+                    <input [disabled]="isInDisplayMode" type="text" 
+                          class="input-write"
+                           [bsConfig]="bsConfig"
+                           bsDatepicker [(bsValue)]="receipt.ngay_ct_goc">
+                  </div>
+                  <div class="col-5" style="display: flex;">
+                    <label style="width: auto">Đơn vị chứng từ gốc:</label>
+                    <input [disabled]="isInDisplayMode" class="input-write" style="flex: 1" type="text" [(ngModel)]="receipt.don_vi_ct_goc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row" id="recept-address">
+                  <div class="col-6">
+                    <label>Nhập tại kho:</label>
+                    <span *ngIf="receipt.kho_nhap" > {{receipt.kho_nhap.ten_kho}}</span>
+                  </div>
+                  <div class="col " style="padding: 0px;">
+                    <label>Địa chỉ:</label>
+                    <span *ngIf="receipt.kho_nhap">{{receipt.kho_nhap.dia_chi}}</span>
+                  </div>
+                </div>
+                <div class="row label-none" *ngIf="!isInDisplayMode && !receipt.id && !linh_kiens" style="
+                  border-top: 1px solid #0aa0f6;
+                  padding-top: 20px;">
+                  <div class="col-4">
+                    <span><b>Mã Linh kiện:</b></span>
+                    <select2 [width]="200" [options]="options_lk" (valueChanged)="changeLinhKien($event)">
+                      <option *ngIf="linhKienAdd && linhKienAdd.linh_kien">{{linhKienAdd.linh_kien.ma + '-' + linhKienAdd.linh_kien.ten}}</option>
+                    </select2>
+                  </div>
+                  <div class="col-8">
+                    <button type="button" class="btn btn-secondary" [disabled]="isInDisplayMode" (click)="themLinhKien();">Thêm vào danh sách</button>
+                  </div>
+                </div>
+
+                <div class="row label-none" *ngIf="!isInDisplayMode && !receipt.id && !linh_kiens" style="
+                border-bottom: 1px solid #0aa0f6;
+                padding-bottom: 20px;">
+                  <div class="col">
+                    <label>SL yêu cầu:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 30%;" min="1" type="number" [(ngModel)]="linhKienAdd.so_luong_yc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+
+                  <div class="col">
+                    <label>SL thực nhập:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 30%;" min="1" type="number" [(ngModel)]="linhKienAdd.so_luong_thuc"  [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col">
+                    <label>Đơn giá:</label>
+                    <input class="input-write" [disabled]="isInDisplayMode" style="width: 50%;" type="number" [(ngModel)]="linhKienAdd.don_gia"  [ngModelOptions]="{standalone: true}">
+                  </div>
+
+                </div>
+                <!-- <div id="add-receipt" *ngIf="!isInDisplayMode && !receipt.id">
+                  <button type="button" class="btn btn-secondary" [disabled]="isInDisplayMode" (click)="themLinhKien();">Thêm vào danh sách</button>
+                </div> -->
+
+                <div class="payment-details">
+
+                  <div class="line-items">
+
+                    <table id="table-receipt" class="table table-condensed-extra table-hover">
+                      <thead>
+                      <tr class="top-headers">
+                        <th>STT</th>
+                        <th id="width-300">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm, hàng hóa</th>
+                        <th>Mã VT</th>
+                        <th>ĐVT</th>
+                        <th colspan="2" >Số lượng</th>
+                        <th style="width: 95px;">Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th style="width: 200px;">Ghi chú</th>
+                      </tr>
+                      <tr class="top-headers">
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+                        <th class="border-top-none"></th>
+
+                        <th class="border-colspan">Yêu cầu</th>
+                        <th class="border-colspan">Thực nhập</th>
+                        <th style="border-top: 0;"></th>
+                        <th style="border-top: 0;"></th>
+                        <th style="border-top: 0;"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let lk of receipt.linh_kiens; let i = index;" >
+                        <td>{{i+1}}</td>
+                        <td>{{lk.linh_kien.ten}}</td>
+                        <td>{{lk.linh_kien.ma}}</td>
+                        <td>{{lk.linh_kien.don_vi}}</td>
+                        <td>{{lk.so_luong_yc}}</td>
+                        <td><input class="input-write" style="width:50px;" [disabled]="isInDisplayMode || receipt.id" type="number" min="1" [ngModel]="lk.so_luong_thuc| number:'1.0-2'" (change)="onChangeSoLuongThuc(i,$event);" [ngModelOptions]="{standalone: true}">
+                        </td>
+                        <td>{{lk.don_gia |number:'1.0-2'}}</td>
+                        <td>{{lk.so_luong_thuc * lk.don_gia |number:'1.0-2'}}</td>
+                        <td> <input type="text" class="input-write"  [disabled]="isInDisplayMode || receipt.id" [(ngModel)]="lk.ghi_chu"  [ngModelOptions]="{standalone: true}"></td>
+                        <td class="border-none" *ngIf="!isInDisplayMode && !receipt.id">
+                        <a *ngIf="!linh_kiens" data-toggle="modal" data-target="#delete_linh_kien" (click)="onXoaLinhKienClick(i);"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                      </td>
+                      </tr>
+                      </tbody>
+                      <tfoot>
+                      <tr>
+                        <td colspan="7"><strong>Tổng trước thuế</strong></td>
+                        <td>{{receipt.tong_so_tien_truoc_thue|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td colspan="6"><strong>Thuế</strong></td>
+                        <td style="text-align: right"> <input class="input-write" [disabled]="isInDisplayMode" style="width: 50px;" type="number" max="100" [(ngModel)]="receipt.phan_tram_thue"  [ngModelOptions]="{standalone: true}">%</td>
+                        <td>
+                          {{(receipt.tong_so_tien_truoc_thue * receipt.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td colspan="7"><strong>Tổng sau thuế</strong></td>
+                        <td>{{(receipt.tong_so_tien_truoc_thue * (1 + receipt.phan_tram_thue/100))|number:'1.0-2'}}</td>
+                        <td></td>
+                      </tr>
+                      </tfoot>
+                    </table>
+                    <div id="action-receip">
+                      <div  (click)="print()" id="print" class="print" *ngIf="receipt && receipt.id">
+                        <a>
+                          <i class="fa fa-print"></i>
+                          In danh sách
+                        </a>
+                      </div>
+                      <div id="save" class="print" *ngIf="!isInDisplayMode">
+                        <a  (click)="onSaveClick();">
+                          <i class="fa fa-floppy-o"></i>
+                          Lưu lại
+                        </a>
+                      </div>
+                      <div id="delete" class="print" *ngIf="isInDisplayMode && receipt.id">
+                        <a data-toggle="modal" data-target="#delete_receipt" >
+                          <i class="fa fa-floppy-o"></i>
+                          Xóa phiếu
+                        </a>
+                      </div>
+                      <div id="edit" class="print" *ngIf="isInDisplayMode && allowEdit">
+                        <a  (click)="onEditClick();">
+                          <i class="fa fa-floppy-o"></i>
+                          Sửa
+                        </a>
+                      </div>
+                      <div id="close" class="print">
+                        <a (click)="close();">
+                          <i class="fa fa-window-close-o"></i>
+                          Đóng
+                        </a>
+                      <div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="footer">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="delete_linh_kien" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <p>Are you sure?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" (click)="xoaLinhKien();">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <div class="modal fade" id="delete_receipt" role="dialog">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>Bạn muốn xóa hóa đơn này?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="deleteReceipt();">Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: none;"  id="receipt-print" class="receipt-content" *ngIf="receipt.id">
+      <div class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="invoice-wrapper">
+              <div class="payment-info">
+                <div class="row">
+                  <div class="col-6">
+                    <strong>{{receipt.congty.ten}}</strong>
+                    <p>{{receipt.congty.dia_chi}}</p>
+                  </div>
+                  <div class="col-6 text-right">
+                    <strong>Mẫu số: 01-VT</strong>
+                    <p>(Ban hành theo TT số 200/2014/TT-BTC <br>ngày 22/12/2014 của BTC)</p>
+                  </div>
+                </div>
+              </div>
+              <div class="receipt-title">
+                <h4>{{isKhoTot?'PHIẾU NHẬP KHO':'PHIẾU NHẬP KHO XÁC'}}</h4>
+                <p>Ngày <span>{{receipt.ngay_ct.getDate()}}</span> tháng <span>{{receipt.ngay_ct.getMonth()+1}}</span>
+                  năm <span>{{receipt.ngay_ct.getFullYear()}}</span>.</p>
+                <p>Số chứng từ: {{'PNK/'+getDayMonth(receipt.ngay_ct)+'/'+getTwoNumber(receipt.so_ct)}}</p>
+              </div>
+              <div class="payment-info">
+                <div class="row">
+                  <div class="col-sm-6">
+                  </div>
+                  <div class="col-sm-6 text-right">
+                    <p><label>Nợ TK:</label> <span *ngIf="receipt.tk_no">{{receipt.tk_no.text}}</span></p>
+                    <p><label>Có TK:</label> <span *ngIf="receipt.tk_co">{{receipt.tk_co.text}}</span></p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <p><label>Mã chứng từ: <span *ngIf="receipt.loai_chung_tu">{{receipt.loai_chung_tu.so_hieu_chung_tu}}</span></label></p>
+                    <p class="p-bold" *ngIf="receipt.don_dat_hang">Đơn đặt hàng số: <span>DDH/ddmm/…..</span></p>
+                    <p>Họ và tên người giao: <span>{{receipt.ten_nguoi_giao}}</span></p>
+                    <p>Theo chứng từ gốc: <span>{{receipt.so_ct_goc}}</span>
+                      <span *ngIf="receipt.ngay_ct_goc">
+                      {{'ngày '+ receipt.ngay_ct_goc.getDate() +' tháng '+(receipt.ngay_ct_goc.getMonth() +1) + ' năm '+
+                        receipt.ngay_ct_goc.getFullYear()}}</span>
+                      <span *ngIf="receipt.don_vi_ct_goc">{{'của '+ receipt.don_vi_ct_goc}}</span>
+                    </p>
+                    <p> Nhập tại kho: <span>{{receipt.kho_nhap.ten_kho}}</span>, địa điểm: <span> {{receipt.kho_nhap.dia_chi}}</span></p>
+                  </div>
+                  <div class="col-sm-6 text-right">
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="payment-details">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="table-responsive">
+                      <table class="table-print table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th style="width: 250px;">Tên, nhãn hiệu, quy cách, phẩm chất vật tư, dụng cụ, sản phẩm, hàng hóa</th>
+                          <th>Mã VT</th>
+                          <th>ĐVT</th>
+                          <th colspan="2" >Số lượng</th>
+                          <th>Đơn giá</th>
+                          <th>Thành tiền</th>
+
+                        </tr>
+                        <tr>
+                          <th class="border-top-none"></th>
+                          <th class="border-top-none"></th>
+                          <th class="border-top-none"></th>
+                          <th class="border-top-none"></th>
+
+                          <th class="border-colspan">Yêu cầu</th>
+                          <th class="border-colspan">Thực nhập</th>
+                          <th style="border-top: 0;"></th>
+                          <th style="border-top: 0;"></th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let lk of receipt.linh_kiens; let i = index;" >
+                          <td>{{i+1}}</td>
+                          <td>{{lk.linh_kien.ten}}</td>
+                          <td>{{lk.linh_kien.ma}}</td>
+                          <td>{{lk.linh_kien.don_vi}}</td>
+                          <td>{{lk.so_luong_yc | number:'1.0-2'}}</td>
+                          <td>{{lk.so_luong_thuc| number:'1.0-2'}}</td>
+                          <td>{{lk.don_gia |number:'1.0-2'}}</td>
+                          <td>{{lk.so_luong_thuc * lk.don_gia |number:'1.0-2'}}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                          <td colspan="7"><strong>Tổng</strong></td>
+                          <td >{{receipt.tong_so_tien_truoc_thue |number:'1.0-2'}}</td>
+                        </tr>
+                        <tr  *ngIf="receipt.phan_tram_thue > 0">
+                          <td colspan="7"><strong>Thuế</strong></td>
+                          <td > {{(receipt.tong_so_tien_truoc_thue * receipt.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                        </tr>
+                        <tr  *ngIf="receipt.phan_tram_thue > 0">
+                          <td colspan="7"><strong>Tổng sau thuế</strong></td>
+                          <td>{{(receipt.tong_so_tien_truoc_thue +receipt.tong_so_tien_truoc_thue * receipt.phan_tram_thue /100)|number:'1.0-2'}}</td>
+                        </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+
+                    <div class="ttl-amts">
+                      - Tổng số tiền viết bằng chữ:……………………………………………………………………………………………………..
+                      <div class="ttl-amts">
+                        - Số chứng từ gốc kèm theo:…………………………………………………………………………………………………….
+                      </div>
+                      <div class="ttl-amts">
+                        - Phòng kỹ thuật xác nhận chất lượng, quy cách vật tư: Vật tư, linh kiện đủ điều kiện nhập kho linh kiện tốt tại Kho Trung tâm							                    </div>
+                    </div>
+                    <br>
+                    <div class="ttl-amts">
+                      <p class="amts-right">Ngày<span>&nbsp;{{today.getDate()}}</span><span>&nbsp;tháng&nbsp;</span><span>{{today.getMonth()+1}}</span>&nbsp;năm
+                        <span>{{today.getFullYear()}}</span>.</p>
+                    </div>
+                    <div class="ttl-amts">
+                      <div  class="row">
+                        <div class="col-4"><b>Người nhận hàng</b></div>
+                        <div class="col-4"><b>Thủ kho</b></div>
+                        <div class="col-4"><b>Người lập phiếu</b></div>
+                      </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="ttl-amts">
+                      <div id="last-row" class="row">
+                        <div class="col-4">{{receipt.ten_nguoi_nhan}}</div>
+                        <div class="col-4"><b>Thủ kho</b></div>
+                        <div class="col-4">{{receipt.nguoi_tao.name}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

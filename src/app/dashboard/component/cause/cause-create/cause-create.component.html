@@ -1,0 +1,40 @@
+<div class="modal fade" id="add_cause">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Thêm Nguyên Nhân Hư Hỏng</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form [formGroup]="nguyenNhanHuHongForm" (submit)="onSubmitAddData()">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="center">Ngành hàng:</label>
+            <select id="center" *ngIf="nganhHangList&&nganhHangList.length" class="form-control" formControlName="nganh_hang_id"> 
+              <option>Lựa chọn ngành hàng</option >
+              <option *ngFor="let item of nganhHangList; let i=index" [value]="item.id">{{item.ten}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="id_cause">Mã Nguyên Nhân Hư Hỏng:</label>
+            <input type="text" class="form-control" id="id_cause" formControlName="ma_nguyen_nhan">
+          </div>
+          <div class="form-group">
+            <label for="note_cause">Mô tả Nguyên Nhân Hư Hỏng:</label>
+            <input type="text" class="form-control" id="note_cause" formControlName="mo_ta">
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!nguyenNhanHuHongForm.valid">Thêm mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

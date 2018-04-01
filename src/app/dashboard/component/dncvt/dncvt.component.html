@@ -1,0 +1,270 @@
+<div class="content" *ngIf="denghi">
+  <div class="app-227">
+    <div class="receipt-content">
+      <div id="full-width" class="container bootstrap snippet">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="invoice-wrapper">
+              <h4 class="title-app">ĐƠN ĐỀ NGHỊ CẤP VẬT TƯ</h4>
+
+              <div class="center">
+                <span *ngIf="denghi.created_at">Ngày tạo phiếu: {{denghi.created_at | date: 'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="row" style="margin: 20px 0px">
+                <div class="col">
+                  <label>Trạng thái:</label>
+                  <span> {{status_phieu_de_nghi_lk[denghi.trang_thai]}}</span>
+                </div>
+                <div class="col" *ngIf="!denghi.phieu_sua_chua_id">
+                  <label>Lý do đề nghị vật tư:</label>
+                  <input class="input-write" *ngIf="!isInDisplayMode" type="text" [(ngModel)]="denghi.ly_do" [ngModelOptions]="{standalone: true}">
+                  <span *ngIf="isInDisplayMode">{{denghi.ly_do}}</span>
+                </div>
+                <div class="col" *ngIf="denghi.phieu_sua_chua_id">
+                  <label>Phiếu sữa chữa:</label>
+                  <a (click)="openPhieuSuaChua();">{{denghi.phieu_sua_chua_id}}</a>
+                </div>
+              </div>
+              <div class="row" style="margin: 20px 0px">
+                <div class="col">
+                  <label>Thời hạn cần VTLK:</label>
+                  <input type="text" [disabled]="isInDisplayMode" class="input-write" [bsConfig]="bsConfig" bsDatepicker [(bsValue)]="denghi.thoi_han_can_vat_tu"
+                    value="{{denghi.thoi_han_can_vat_tu | date: 'dd/MM/yyyy' }}">
+                </div>
+                <div class="col">
+                  <div class="col flex-last">
+                    <label>Kho trạm:</label>
+                    <span *ngIf="denghi.kho_tram">{{denghi.kho_tram.ten_kho}}</span>
+                    <span style="color: red;" *ngIf="!denghi.kho_tram">Vui lòng lựa trọn trạm bảo hành</span>
+
+                  </div>
+                </div>
+
+              </div>
+              <div *ngIf="!isInDisplayMode" class="row" style="margin: 20px 0px">
+                <div class="col-4">
+                  <label>Mã Linh kiện:</label>
+                  <select2 [width]="200" [options]="options_lk" (valueChanged)="changeLinhKien($event)">
+                    <option *ngIf="linhKienAdd.linh_kien">{{linhKienAdd.linh_kien.ma + '-' + linhKienAdd.linh_kien.ten}}</option>
+                  </select2>
+                </div>
+                <div class="col-8">
+                  <button type="button" class="btn btn-secondary" (click)="themLinhKien();">Thêm vào danh sách</button>
+                </div>
+              </div>
+              <div *ngIf="!isInDisplayMode" class="row" style="margin: 20px 0px">
+                <div class="col">
+                  <label>Tồn kho trạm:</label>
+                  {{linhKienAdd.ton}}
+                </div>
+
+                <div class="col">
+                  <label>Số lượng yêu cầu:</label>
+                  <input type="number" class="input-write" style="width:40%" [(ngModel)]="linhKienAdd.so_luong">
+                </div>
+
+                <div class="col">
+                  <label>Đơn giá:</label>
+                  <input class="input-write" [disabled]="isInDisplayMode" style="width: 50%;" type="number" [(ngModel)]="linhKienAdd.don_gia"
+                    [ngModelOptions]="{standalone: true}">
+                </div>
+                <div class="col" *ngIf="false">
+                  <label>Mã Linh kiện xác cần thu:</label>
+                  <select2 [width]="200" [options]="options_lk" (valueChanged)="changeLinhKienXac($event)">
+                    <option *ngIf="linhKienAdd.linh_kien_xac">{{linhKienAdd.linh_kien_xac.ma + '-' + linhKienAdd.linh_kien_xac.ten}}</option>
+                  </select2>
+                </div>
+              </div>
+
+              <table class="table table-condensed table-hover">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Tên LK VT</th>
+                    <th>ĐVT</th>
+                    <th>Số lượng yêu cầu</th>
+                    <th *ngIf="!phieu_sua_chua_id">Đơn giá</th>
+                    <th *ngIf="!phieu_sua_chua_id">Thành tiền</th>
+                    <th *ngIf="denghi.trang_thai === 1 || denghi.trang_thai === 5">Tồn kho trạm</th>
+                    <th *ngIf="denghi.trang_thai === 5 || denghi.is_gui_trung_tam">Số lượng đề xuất trung tâm</th>
+                    <th *ngIf="denghi.trang_thai === 5">Tồn kho TT</th>
+                    <th>Thời hạn cần vật tư, LK</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let lk of denghi.linh_kiens; let i = index;">
+                    <td>{{i+1}}</td>
+                    <td>{{'[' + lk.linh_kien.ma + ']' + lk.linh_kien.ten}}</td>
+                    <td>{{lk.linh_kien.don_vi}}</td>
+                    <td>
+                      <input class="input-write" style="width:50px;" [disabled]="isInDisplayMode" type="number" min="1" [ngModel]="lk.so_luong | number:'1.0-2'"
+                        (change)="onChangeSoLuongThuc(i,$event);" [ngModelOptions]="{standalone: true}">
+                    </td>
+                    <td *ngIf="!phieu_sua_chua_id">{{lk.don_gia | number:'1.0-2'}}</td>
+                    <td *ngIf="!phieu_sua_chua_id">{{(lk.so_luong*lk.don_gia) | number:'1.0-2'}}</td>
+                    <td *ngIf="denghi.trang_thai === 1 || denghi.trang_thai === 5">{{lk.ton_tram}}</td>
+                    <td *ngIf="denghi.is_gui_trung_tam">{{lk.so_luong_gui_trung_tam}}</td>
+                    <td *ngIf="denghi.trang_thai === 5">
+                      <input class="input-write" style="width:50px;" [disabled]="isInDisplayMode" type="number" min="1" [ngModel]="lk.so_luong_gui_trung_tam | number:'1.0-2'"
+                        (change)="onChangeSoLuongGuiTrungTam(i,$event);" [ngModelOptions]="{standalone: true}">
+                    </td>
+                    <td *ngIf="denghi.trang_thai === 5 || denghi.is_gui_trung_tam">{{lk.ton_trung_tam}}</td>
+                    <td>{{denghi.thoi_han_can_vat_tu | dateTime}}</td>
+                    <td class="border-none" *ngIf="!isInDisplayMode">
+                      <a data-toggle="modal" (click)="onXoaLinhKienClick(i);">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div *ngIf="linhKienXoaIndex != null">
+                <div class="modal-dialog modal-sm">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <p>Bạn muốn xóa?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" (click)="xoaLinhKien(linhKienXoaIndex);">Có</button>
+                      <button type="button" class="btn btn-danger" (click)="xoaLinhKien(null);">Không</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="action-receip">
+                <div id="print" class="print" (click)="onPrintOrder()">
+                  <a>
+                    <i class="fa fa-print"></i>
+                    In danh sách
+                  </a>
+                </div>
+                <div id="save" class="print" *ngIf="!isInDisplayMode" (click)="onSaveClick();">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Lưu lại
+                  </a>
+                </div>
+                <div class="print" *ngIf="denghi.trang_thai === 3 && !isInDisplayMode" (click)="onDeNghiClick();">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Gửi đề nghị
+                  </a>
+                </div>
+                <div id="reject" *ngIf="denghi.trang_thai === 1 && isInDisplayMode" class="print" (click)="onRejectClick();">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Từ chối
+                  </a>
+                </div>
+                <div *ngIf="denghi.trang_thai === 1 && !isTramDuLK && isInDisplayMode" class="print" (click)="onChuyenToiTrungTamClick();">
+                  <a (click)="onChuyenToiTrungTamClick();">
+                    <i class="fa fa-floppy-o"></i>
+                    Chuyển tới trung tâm
+                  </a>
+                </div>
+                <div *ngIf="denghi.trang_thai === 5  && isInDisplayMode" class="print" (click)="onTaoPhieuChuyenKho();">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Chuyển kho
+                  </a>
+                </div>
+                <div *ngIf="denghi.trang_thai === 5  && isInDisplayMode && !denghi.phieu_sua_chua_id" class="print" (click)="onTaoPhieuXuatKhoTrungTam();">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Xuất kho
+                  </a>
+                </div>
+                <div *ngIf="(denghi.trang_thai === 1 && isTramDuLK) && isInDisplayMode" class="print" (click)="onTaoPhieuXuatKho();">
+                  <a >
+                    <i class="fa fa-floppy-o"></i>
+                    Xuất linh kiện
+                  </a>
+                </div>
+                <div id="edit" *ngIf="isInDisplayMode && denghi.trang_thai != 2" (click)="onEditClick();" class="print">
+                  <a>
+                    <i class="fa fa-floppy-o"></i>
+                    Sửa
+                  </a>
+                </div>
+                <div id="close" class="print">
+                  <a (click)="close();">
+                    <i class="fa fa-window-close-o"></i>
+                    Đóng
+                  </a>
+                </div>
+                <div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="order-print" style="display: none">
+      <div class="order-header">
+        <div class="title" *ngIf="denghi.congty">{{denghi.congty.ten}}</div>
+        <div *ngIf="denghi.congty">
+          {{denghi.congty.dia_chi}}
+        </div>
+      </div>
+
+      <div class="order-body">
+        <div class="title">ĐƠN ĐỀ NGHỊ CÁP VẬT TƯ</div>
+        <div class="order-time">Ngày {{dateShow.date}} tháng {{dateShow.month}} năm {{dateShow.year}}</div>
+        <div class="order-no">Số: DDH/<span>{{getDayMonth(denghi.created_at)}}</span>/<span>{{denghi.id}}</span></div>
+        <div class="order-info">
+          <div style="padding-top:10px">
+            <label>Họ tên người đề nghị:</label>
+            <div class="dot-inline" *ngIf="denghi.nguoi_tao">{{denghi.nguoi_tao.name}}</div>
+          </div>
+          <div style="padding-top:10px">
+            <label>Bộ phận:</label>
+            <div class="dot-inline"></div>
+          </div>
+          <div style="padding-top:10px">
+            <label>Lý do đề nghị:</label>
+            <div class="dot-inline">{{denghi.ly_do?denghi.ly_do: (denghi.phieu_sua_chua_id?'Cấp linh kiện bảo hành':'')}}</div>
+          </div>
+        </div>
+        <div class="order-detail">
+          <table>
+            <tr>
+              <th class="text center">STT</th>
+              <th style="width: 25%;">Tên LK VT</th>
+              <th class="text center">ĐVT</th>
+              <th class="text center">Số lượng yêu cầu</th>
+              <th class="text center">Đơn giá</th>
+              <th class="text center">Thành tiền</th>
+              <th class="text center">Thời hạn cần vật tư</th>
+            </tr>
+            <tr *ngFor="let lk of denghi.linh_kiens; let i=index">
+              <td class="text center">{{i+1}}</td>
+              <td>{{'[' + lk.linh_kien.ma + ']' + lk.linh_kien.ten}}</td>
+              <td>{{lk.linh_kien.don_vi}}</td>
+              <td class="text center">{{lk.so_luong | number:'1.0-2'}}</td>
+              <td class="text center">{{lk.don_gia | number:'1.0-2'}}</td>
+              <td class="text center">{{(lk.so_luong*lk.don_gia) | number:'1.0-2'}}</td>
+              <td class="text center">{{denghi.thoi_han_can_vat_tu | dateTime}}</td>
+
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="row">
+          <div style="width: 50%; text-align:center; float: left; color: #fff;">.</div>
+          <div style="width: 50%; text-align:center; float: right">Ngày<span>&nbsp;{{today.getDate()}}</span><span>&nbsp;tháng&nbsp;</span><span>{{today.getMonth()+1}}</span>&nbsp;năm
+            <span>{{today.getFullYear()}}</span></div>
+          <div class="col">Trưởng bộ phận</div>
+          <div class="col">Người đề nghị</div>
+          <div style="width: 50%; text-align:center; margin-top: 40px; float: left; color: #fff;">.</div>
+          <div style="width: 50%; text-align:center; margin-top: 40px; float: right; color: #fff;" >.</div>
+          <div class="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div class="col" *ngIf="denghi.nguoi_tao">{{denghi.nguoi_tao.name}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

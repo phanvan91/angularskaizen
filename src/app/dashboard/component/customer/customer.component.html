@@ -1,0 +1,90 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách khách hàng</h4>
+
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr><th>Mã KH</th>
+        <th>Email</th>
+        <th>Tên KH</th>
+        <th>Điện thoại</th>
+        <th>Loại KH</th>
+        <th>Địa chỉ</th>
+        <th>Phường Xã</th>
+        <th>Quận huyện</th>
+        <th>Tỉnh/ thành phố</th>
+        <th>DS serial</th>
+
+        <th>
+          <a data-toggle="modal" data-target="#add_customer" (click)="isAddKH = true">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </a>
+        </th>
+      </tr></thead>
+      <tbody>
+      <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of KhachHang; let i = index">
+        <td class="ng-binding">{{item.ma}}</td>
+        <td class="ng-binding">{{item.email}}</td>
+
+        <td class="ng-binding">{{item.ten}}</td>
+        <td>{{item.dien_thoai}}</td>
+        <td class="ng-binding" *ngIf="item.loai==1;else other_content">Khách lẻ</td>
+        <ng-template #other_content>
+          <td class="ng-binding">Khách sỉ</td>
+        </ng-template>
+
+        <td>{{item.dia_chi}}</td>
+        <td>
+          {{ village[item.phuong_xa].name }}
+
+        </td>
+        <td>
+          {{ dictrict[item.quan_huyen].name }}
+        </td>
+        <td>
+          {{ city[item.tinh_tp].name }}
+
+
+        </td>
+         <td>
+           <ng-container *ngFor="let s of item.serials">
+             {{s.serial}}
+           </ng-container>
+         </td>
+        <td class="ng-binding">
+          <a data-toggle="modal" data-target="#delete_customer" (click)="deleteIndex = i"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          <a data-toggle="modal" data-target="#edit_customer" (click)="openEdit(i)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+      <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+    <!-- The Modal -->
+    <app-add-customer *ngIf="isAddKH"  (khachHangAdded)="khachHangAdded($event)"></app-add-customer>
+
+    <app-customer-edit (khachHangEdit)="KhachHang[editIndex]=$event" *ngIf="open" [data]="KhachHang[editIndex]"></app-customer-edit>
+
+    <div class="modal fade" id="delete_customer" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Bạn có chắc muốn xóa khách hàng nảy không?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="onDeleteSubmit()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+

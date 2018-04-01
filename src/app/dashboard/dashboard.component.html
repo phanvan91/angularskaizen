@@ -1,0 +1,183 @@
+<app-header #header></app-header>
+
+<div class="wrapper d-flex">
+  <div class="side-bar {{isOpenMenu?'':'minize'}}" (mouseleave) ="mouseOutMenu()">
+    <ul class="nav nav-stacked" id="menu">
+      <li class="nav-item">
+        <a class="nav-link" (click)="showMenuRange()" [ngStyle]="{'float': isOpenMenu?'right':'left'}"><i class="fa {{isOpenMenu?'fa-window-minimize':'fa-window-maximize'}}" aria-hidden="true"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Bảo hành" (click)="onSelectMenu('baohanh')"><img src="../../assets/images/bh.png" alt=""> <span class="collapse in hidden-xs-down">Bảo hành</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.baohanh">
+          <li class="nav-item"><a routerLink="tao-phieu-sua-chua" class="nav-link" title="Tạo phiếu bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu bảo hành</span></a></li>
+          <li class="nav-item"><a class="nav-link"  href="javascript:void(0)" routerLink="danh-sach-phieu-bao-hanh" title="PBH yêu cầu"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Phiếu Bảo Hành</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-tinh-trang-hu-hong" class="nav-link" title="DS Tình Trạng Hư Hỏng"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Tình Trạng Hư Hỏng</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-nguyen-nhan" class="nav-link" title="DS Nguyên Nhân"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Nguyên Nhân</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-huong-khac-phuc" class="nav-link" title="DS Hướng Khắc Phục"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Hướng Khắc Phục</span></a></li>
+          <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="center" class="nav-link" title="DS trung tâm bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS trung tâm bảo hành</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)" routerLink="station" class="nav-link" title="DS trạm bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS trạm bảo hành</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)"  class="nav-link" title="DS chi phí đi lại" routerLink="chi-phi-di-lai"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS chi phí đi lại</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-bang-tinh-cong-sua-chua" class="nav-link" title="Bảng tính công sửa chữa"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Bảng tính công sửa chữa</span></a></li> -->
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Linh kiện, vật tư" (click)="onSelectMenu('linhkien')"><i class="fa fa-microchip"></i> <span class="collapse in hidden-xs-down">Linh kiện, vật tư</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.linhkien">
+            <li class="nav-item"><a routerLink="don-de-nghi-cap-vat-tu" class="nav-link" title="Đề nghị cấp VT LK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Đề nghị cấp VT LK</span></a></li>
+            <li class="nav-item"><a routerLink="danh-sach-phieu-vat-tu" class="nav-link" title="DS Phiếu đề nghị cấp LK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Phiếu đề nghị cấp LK</span></a></li>
+            <li class="nav-item"><a routerLink="tao-don-dat-hang" class="nav-link" title="Tạo Đơn Đặt Hàng"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo Đơn Đặt Hàng</span></a></li>
+            <li class="nav-item"><a routerLink="danh-sach-don-dat-hang" class="nav-link" title="DS Đơn Đặt Hàng"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Đơn Đặt Hàng</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="accessories" class="nav-link" title="DS Linh kiện"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Linh kiện</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="theo-doi-no-linh-kien" class="nav-link" title="Theo dõi nợ linh kiện xác"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Theo dõi nợ linh kiện xác</span></a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Kho linh kiện tốt" (click)="onSelectMenu('kholinhkientot')"><i class="fa fa-check-square"></i> <span class="collapse in hidden-xs-down">Kho linh kiện tốt</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.kholinhkientot">
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="receipt" class="nav-link" title="Tạo phiếu NK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu NK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="receipts" class="nav-link" title="DS phiếu NK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu NK</span></a></li>
+            <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="issue" class="nav-link" title="Tạo phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu XK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="issues" class="nav-link" title="DS phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu XK</span></a></li>
+            <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="removal" class="nav-link" title="Tạo phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu CK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="removals" class="nav-link" title="DS phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu CK</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="ton-kho-linh-kien-tot" class="nav-link" title="Tồn kho"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tồn kho</span></a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Kho linh kiện xác" (click)="onSelectMenu('kholinhkienxac')"><img src="../../assets/images/bin.png" alt=""> <span class="collapse in hidden-xs-down">Kho linh kiện xác</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.kholinhkienxac">
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="danh-sach-kho-xac-cho-nhap-kho" class="nav-link" title="Danh sách kho xác chờ nhập kho"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds kho xác chờ nhập kho</span></a></li>
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="receipt" class="nav-link" title="Tạo phiếu NK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu NK</span></a></li> -->
+            <li class="nav-item"><a  href="javascript:void(0)" routerLink="ds-phieu-nhap-kho-xac" class="nav-link" title="DS phiếu NK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu NK</span></a></li>
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="issue" class="nav-link" title="Tạo phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu XK</span></a></li> -->
+            <li class="nav-item"><a  href="javascript:void(0)" routerLink="ds-phieu-xuat-kho-xac" class="nav-link" title="DS phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu XK</span></a></li>
+            <!-- Xóa Phiếu chuyển kho -->
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="removal" class="nav-link" title="Tạo phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu CK</span></a></li> -->
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="removals"class="nav-link" title="DS phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu CK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="ton-kho-linh-kien-xac" class="nav-link" title="Tồn kho"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tồn kho</span></a></li>
+            <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="tinh-trang-nhap-no-linh-kien-xac"  class="nav-link" title="Tình trạng nhập/nợ linh kiện xác"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tình trạng nhập/nợ linh kiện xác</span></a></li>-->
+            <!-- <li class="nav-item"><a  href="javascript:void(0)" routerLink="ds-phieu-chuyen-kho-xac"class="nav-link" title="DS phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu CK xác</span></a></li>-->
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Kho thành phẩm" (click)="onSelectMenu('khothanhpham')"><img src="../../assets/images/khotp.png" alt=""> <span class="collapse in hidden-xs-down">Kho thành phẩm</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.khothanhpham">
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="phieu-nhap-kho-sua-chua" class="nav-link" title="DS phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu nhập kho sửa chữa</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="ds-phieu-nhap-kho-thanh-pham" class="nav-link" title="DS phiếu NK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu NK</span></a></li>
+            <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="issue" class="nav-link" title="Tạo phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu XK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="ds-phieu-xuat-kho-thanh-pham" class="nav-link" title="DS phiếu XK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu XK</span></a></li>
+            <!-- <li class="nav-item"><a href="javascript:void(0)" routerLink="removal" class="nav-link" title="Tạo phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Tạo phiếu CK</span></a></li> -->
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="ds-phieu-chuyen-kho-thanh-pham" class="nav-link" title="DS phiếu CK"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS phiếu CK</span></a></li>
+
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Happy Call" (click)="onSelectMenu('happycall')"><i class="fa fa-phone"></i> <span class="collapse in hidden-xs-down">Happy Call</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.happycall">
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-happy-call-chua-thuc-hien" class="nav-link" title="Ds Happy call chưa thực hiện"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds Happy call chưa thực hiện</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-happy-call-da-thuc-hien" class="nav-link" title="DS Happy call đã thực hiện"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS Happy call đã thực hiện</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="hpcall" class="nav-link" title="Ds câu hỏi Happy call"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds câu hỏi Happy call</span></a></li>
+
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" title="Lenh Giao Hang" (click)="onSelectMenu('giao_hang')"><i class="fa fa-truck"></i> <span class="collapse in hidden-xs-down">Lệnh giao hàng</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.giao_hang">
+          <li class="nav-item"><a href="javascript:void(0)"  routerLink="lenh-nhanh-hang-ve" class="nav-link" title="Lệnh nhận hàng về"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Lệnh nhận hàng về</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)"  class="nav-link" title="Lệnh trả hàng bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Lệnh trả hàng bảo hành</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)"  routerLink="lenh-giao-hang-cho-muon-tu" class="nav-link" title="Lệnh giao hàng - cho mượn tủ"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Lệnh giao hàng cho mượn tủ</span></a></li>
+          <li class="nav-item"><a href="javascript:void(0)"  routerLink="lenh-giao-hang-xuat-doi-bao-hanh" class="nav-link" title="Lệnh giao hàng - xuất đổi bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span style="font-size:90%">Lệnh giao hàng xuất đổi bảo hành</span></a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" title="Báo cáo" (click)="onSelectMenu('baocao')"><i class="fa fa-tasks"></i> <span class="collapse in hidden-xs-down">Báo cáo</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.baocao">
+
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a  href="javascript:void(0)" routerLink="customer" class="nav-link" title="Khách hàng" (click)="onSelectMenu('khachhang')"><i class="fa fa-user"></i> <span class="collapse in hidden-xs-down">Khách hàng</span></a>
+        <ul class="nav nav-stacked collapse left-submenu" *ngIf="leftMenu.khachhang">
+
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Sản phẩm, serial" (click)="onSelectMenu('sanpham')"><i class="fa fa-ticket"></i> <span class="collapse in hidden-xs-down">Sản phẩm, serial</span></a>
+        <ul class="nav nav-stacked collapse left-submenu up" *ngIf="leftMenu.sanpham">
+            <li  class="nav-item"><a href="javascript:void(0)" routerLink="category"  class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds ngành hàng</span></a></li>
+            <li  class="nav-item"><a href="javascript:void(0)" routerLink="product" class="nav-link" ><i  class="fa fa-location-arrow" aria-hidden="true"></i><span>DS nhóm sản phẩm</span></a></li>
+            <li  class="nav-item"><a href="javascript:void(0)" routerLink="model" class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds model</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="javascript:void(0)" routerLink="serial"  ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Ds serial</span></a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" title="Cài đặt" (click)="onSelectMenu('caidat')"><i class="fa fa-cogs"></i> <span class="collapse in hidden-xs-down">Cài đặt</span></a>
+        <ul class="nav nav-stacked collapse left-submenu up" *ngIf="leftMenu.caidat">
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="company"  class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Danh sách công ty</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="accountant"  class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Hệ Thống tài Khoản Kế Toán</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="document" class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Danh sách loại Chứng Từ</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="documents"  class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Danh sách số hiệu Chứng Từ</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="role" class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Phân loại người dùng</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="user" class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Danh sách người dùng</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="legal" class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Đối tượng pháp nhân</span></a></li>
+
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="center" class="nav-link" title="DS trung tâm bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS trung tâm bảo hành</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="station" class="nav-link" title="DS trạm bảo hành"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS trạm bảo hành</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)"  class="nav-link" title="DS chi phí đi lại" routerLink="chi-phi-di-lai"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>DS chi phí đi lại</span></a></li>
+            <li class="nav-item"><a href="javascript:void(0)" routerLink="dach-sach-bang-tinh-cong-sua-chua" class="nav-link" title="Bảng tính công sửa chữa"><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Bảng tính công sửa chữa</span></a></li>
+
+            <li class="nav-item"><a class="nav-link" ><i class="fa fa-location-arrow" aria-hidden="true"></i><span>Phân quyền</span></a></li>
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+  <main class="d-flex justify-content-start">
+    <router-outlet></router-outlet>
+
+  </main>
+  <ng2-toasty></ng2-toasty>
+
+
+  <div class="loading hide">
+    <div class="lds-spinner"><div>
+
+    </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+    </div>
+  </div>
+</div>

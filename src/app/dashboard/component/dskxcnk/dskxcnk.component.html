@@ -1,0 +1,104 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách kho xác chờ nhập kho</h4>
+    <div class="row filter-ds">
+      <form style="width: 100%;" (submit)="search($event)">
+        <div class="form-group">
+          <label class="" for="startDate">Từ ngày</label>
+          <input type="text" class="input-write" id="startDate" bsDatepicker [(bsValue)]="startDate"
+          placeholder="Start date" value="{{startDate | date: 'dd/MM/yyyy' }}">
+          <label class="" for="endDate">Đến ngày</label>
+          <input type="text" class="input-write" id="endDate" bsDatepicker [(bsValue)]="endDate"
+          placeholder="End date" value="{{endDate | date: 'dd/MM/yyyy' }}">
+        </div>
+        <div class="form-group">
+          <label class="" for="startDate">Trạm</label>
+          <select2 [width]="200" [options]="optionTram" (valueChanged)="changeTram($event)">
+              <option *ngIf="data_tram_map">{{data_tram_map.ten}}</option>
+          </select2>
+          
+          <label class="" for="startDate">Nhân viên</label>
+          <select2 [width]="200" [options]="optionsNhanVien" (valueChanged)="changeNhanVien($event)">
+            <option *ngIf="data_nhanvien_map">{{data_nhanvien_map.ten}}</option>
+          </select2>
+
+          <label class="" for="startDate">Số phiếu</label>
+          <input type="number" class="input-write" [(ngModel)]="searchForm.so_phieu" [ngModelOptions]="{standalone: true}">
+
+          <label class="" for="startDate">Trạng thái</label>
+          <select class="input-write" [(ngModel)]="searchForm.trang_thai" [ngModelOptions]="{standalone: true}">
+            <option value="">Lựa chọn</option>
+            <option value="1">Chưa nhập kho</option>
+            <option value="2">Đã nhập kho</option>
+          </select>
+          <button type="button" (click)="getIdCheckChoLinhKien()"
+          data-toggle="modal" data-target="#open_nhap_kho"
+          class="btn btn-secondary float-right" style="margin-left: 20px;"><i class="fa fa-bookmark" aria-hidden="true"></i>
+            Tạo phiếu nhập kho</button>
+          <button class="btn btn-primary float-right" style="margin-left: 20px;"><i class="fa fa-search"></i> Lọc danh sách</button>
+
+        </div>
+      </form>
+    </div>
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th (click)="checkChoLinhKien('all')" style="cursor: pointer"><i class="fa fa-check" aria-hidden="true"></i></th>
+        <th>Nhân viên</th>
+        <th>Phiếu bảo hành</th>
+        <th>Linh kiện cấp</th>
+        <th>Số lượng</th>
+        <th>Linh kiện thu hồi</th>
+        <th>Số lượng thu</th>
+        <th>Ghi chú</th>
+        <th>Tình trạng</th>
+      </tr></thead>
+      <tbody>
+        <tr *ngFor="let item of listChoLinhKienXac; let i=index"
+          class="{{item.so_luong_thu>0&&item.so_luong_thu<item.so_luong_cap?'warning':''}}"
+        >
+          <td><a class="btn-mini {{!checkChoLinhKienXac[item.id].select?'circle':''}}" (click)="checkChoLinhKien(item.id)">
+              <i *ngIf="!checkChoLinhKienXac[item.id].select" class="fa fa-circle-o" aria-hidden="true"></i>
+              <i *ngIf="checkChoLinhKienXac[item.id].select" class="fa fa-check" aria-hidden="true"></i>
+            </a>
+          </td>
+          <td>{{item.user.name}}</td>
+          <td><a class="btn-mini" (click)="openPhieuSuaChua(item.phieu_sua_chua_id)">{{item.phieu_sua_chua_id}}</a></td>
+          <td>{{item.linh_kien_cap.ma+' -- '+item.linh_kien_cap.ten}}</td>
+          <td><b>{{item.so_luong_cap}}</b></td>
+          <td>{{item.linh_kien_thu_hoi.ma+' -- '+item.linh_kien_thu_hoi.ten}}</td>
+          <td><b>{{item.so_luong_thu}}</b></td>
+          <td>{{item.ghi_chu}}</td>
+          <td>{{item.trang_thai==1?'Chờ nhập kho':'Đã nhập kho'}}</td>
+        </tr>
+        <tr *ngIf="listChoLinhKienXac && listChoLinhKienXac.length==0" >
+          <td colspan="9" style="text-align: center;">Không tìm thấy kết quả</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- The Modal -->
+    <div class="modal fade" id="open_nhap_kho" >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content" style="width: 980px;">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Phiếu nhập kho</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+      
+            <!-- Modal body -->
+            <form>
+      
+              <div class="modal-body">
+                <app-receipt *ngIf="openNhapKho" [loai_kho]="2" [linh_kiens]="arrItemChecked" (onSaveDone)="saveDone($event)"></app-receipt>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+

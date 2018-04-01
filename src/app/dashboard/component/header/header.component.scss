@@ -1,0 +1,65 @@
+@import '../../../../scss/variables';
+header{
+  width: 100%;
+  background: #eee;
+  height: $headerHeight;
+  position: relative;
+}
+header .nav{
+  position: absolute;
+  right:0px; top: 0px;
+  height: 100%;
+}
+header .nav a{
+  text-decoration: none;
+  line-height: $headerHeight;
+  padding: 0px 20px;
+  height: 100%;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+header .nav a:hover{
+  background: $bg;
+  color: $colorText;
+}
+header .nav a.none:hover{
+  background: transparent;
+  color: $bg;
+}
+.form-search{
+  width: 200px;
+  margin: 0px auto;
+  display: block;
+  position: relative;
+  height: $headerHeight;
+  padding: 2px 0px;
+}
+.form-search button{
+  position: absolute; outline: none; cursor: pointer; right: 0px; top: 0px; height: 100%; background: transparent; padding: 0px 15px; border: none;
+}
+.form-search input.form-control{
+  height: 36px; width: 200px;
+}
+.droplist{
+  list-style: none;
+  padding-left: 20px;
+  max-height: 500px;
+  overflow: auto;
+  width: 250px;
+}
+.top-list{
+  border-top: 1px solid #aad3ec;
+  background: rgba(151, 179, 208, 0.11);
+}
+#logout-field{
+  min-width: auto;
+  margin-right: -5px;
+}
+#logout-field i{
+  margin-left: -5px;
+    margin-right: 10px;
+    width: 15px;
+}

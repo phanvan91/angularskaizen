@@ -1,0 +1,195 @@
+<div class="wrapper">
+  <div class="title">LỆNH GIAO HÀNG - CHO MƯỢN TỦ</div>
+  <div class="row" style="margin-bottom: 20px;">
+    <div class="col-5"></div>
+    <div class="col-7">
+      Ngày {{ngayTaoPhieuStr.date}} tháng {{ngayTaoPhieuStr.month}} năm {{ngayTaoPhieuStr.year}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Người đề nghị:</label>
+      <select2 [width]="200" [options]="options_user" (valueChanged)="onChangeNgDeNghi($event)"></select2>
+    </div>
+    <div class="col">
+      <label style="width: auto">Bộ phận:</label>
+      <span>{{lenhGiaoHang.nguoi_de_nghi.bo_phan}}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Tên khách hàng:</label>
+      <select2 [width]="200" [options]="options_kh" (valueChanged)="onChangeKhachHang($event)"></select2>
+    </div>
+    <div class="col">
+      <label style="width: auto">Điện Thoại:</label>
+      <span>{{lenhGiaoHang.khach_hang.sdt}}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Địa chỉ nhận hàng:</label>
+      <input type="text" class="input-write" [(ngModel)]="lenhGiaoHang.khach_hang.dia_chi">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Lý do:</label>
+      <input type="text" class="input-write" [(ngModel)]="lenhGiaoHang.ly_do">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Ghi chú:</label>
+      <input type="text" class="input-write" style="width: 420px;" [(ngModel)]="lenhGiaoHang.ghi_chu">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Tìm kiếm số Serial:</label>
+      <select2 [width]="200" [options]="options_serial" (valueChanged)="onChangeSerial($event)"></select2>
+    </div>
+    <div class="col">
+      <label style="width: auto">Số lượng:</label>
+      <input type="number" class="input-write" style="width: 80px;" [(ngModel)]="chiTietLenhGiaoHang.solg">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+        <label >Xuất từ kho</label>
+        <select2 [width]="200" [options]="options_khoXuat" (valueChanged)="onChangeKho($event)"></select2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+        <label>Ghi chú</label>
+        <input type="text" class="input-write" [(ngModel)]="chiTietLenhGiaoHang.ghi_chu">
+    </div>
+
+  </div>
+  <div class="row">
+    <button class="btn btn-secondary" style="margin: 10px auto; display: block;" (click) = "addToList()">Thêm vào danh sách</button>
+  </div>
+
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>MODEL</th>
+          <th>S.Lượng</th>
+          <th>XUẤT TỪ KHO</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of lenhGiaoHang.chi_tiet; let i = index" >
+          <td>{{i+1}}</td>
+          <td>{{item.model}}</td>
+          <td>{{item.solg}}</td>
+          <td>{{1}}</td>
+          <td>{{item.ghi_chu}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="width: 180px; margin: 0px auto;">
+    <button type="button" class="btn btn-primary" (click)="onPrint()"><i class="fa fa-print" aria-hidden="true"></i>
+      Print</button>
+    <button class="btn btn-default" style="color: blue; border: 1px solid blue;" (click) = "convertDocx()"><i class="fa fa-file-word-o" aria-hidden="true"></i>
+      Word</button>
+  </div>
+</div>
+
+<div id="order-print" style="display: none">
+<div class="img">
+  <img src="../../assets/images/logo.jpg" width="200px" alt="">
+</div>
+<!-- <div class="order-header">
+  <div class="title">world</div>
+  <div>
+    world
+  </div>
+</div> -->
+
+<div class="order-body">
+  <div class="title" style="font-size:30px">LỆNH GIAO HÀNG - CHO MƯỢN TỦ</div>
+  <div class="order-time">Ngày {{ngayTaoPhieuStr.date}} tháng {{ngayTaoPhieuStr.month}} năm {{ngayTaoPhieuStr.year}}</div>
+  <div class="order-info">
+    <div style="clear: both">
+        <div style="padding-top:10px; width: 50%; float: left">
+            <label>Người đề nghị:</label>
+            <div class="dot-inline">&emsp; {{lenhGiaoHang.nguoi_de_nghi.ten}}</div>
+        </div>
+        <div style="padding-top:10px; width: 50%; float: left">
+            <label>Bộ phận:</label>
+            <div class="dot-inline">&emsp; {{lenhGiaoHang.nguoi_de_nghi.bo_phan}}</div>
+        </div>
+    </div>
+    <div style="clear: both">
+        <div style="padding-top:10px; width: 50%; float: left">
+            <label>Tên khách hàng: </label>
+            <div class="dot-inline" *ngIf="lenhGiaoHang.khach_hang" >&emsp; {{lenhGiaoHang.khach_hang.ten}}</div>
+        </div>
+        <div style="padding-top:10px; width: 50%; float: left">
+            <label>Điện Thoại:</label>
+            <div class="dot-inline">&emsp; {{lenhGiaoHang.khach_hang.sdt}}</div>
+        </div>
+    </div>
+    <div style="clear: both">
+      <div style="padding-top:10px; width: 50%; float: left">
+          <label>Địa chỉ nhận hàng:</label>
+          <div class="dot-inline" *ngIf="lenhGiaoHang.khach_hang" >&emsp; {{lenhGiaoHang.khach_hang.dia_chi}}</div>
+      </div>
+  </div>
+    <div style="clear: both">
+      <div style="padding-top:10px; width: 50%; float: left">
+          <label>Lý do:</label>
+          <div class="dot-inline" >&emsp; {{lenhGiaoHang.ly_do}}</div>
+      </div>
+  </div>
+    <div style="clear: both">
+        <div style="padding-top:10px; width: 50%; float: left">
+            <label>Ghi chú:</label>
+            <div class="dot-inline" *ngIf="lenhGiaoHang.ghi_chu" >&emsp; {{lenhGiaoHang.ghi_chu}}</div>
+        </div>
+    </div>
+
+  </div>
+  <div class="order-detail">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>MODEL</th>
+          <th>S.Lượng</th>
+          <th>XUẤT TỪ KHO</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of lenhGiaoHang.chi_tiet; let i = index" >
+          <td>{{i+1}}</td>
+          <td>{{item.model}}</td>
+          <td>{{item.solg}}</td>
+          <td>{{1}}</td>
+          <td>{{item.ghi_chu}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="order-footer">
+  <div class="row">
+    <div style="width: 50%; text-align:center; float: left; color: #fff;">.</div>
+    <div style="width: 50%; text-align:center; float: right">Ngày {{ngayTaoPhieuStr.date}} tháng {{ngayTaoPhieuStr.month}} năm {{ngayTaoPhieuStr.year}}</div>
+    <div class="col">Trưởng bộ phận</div>
+    <div class="col">Người đề nghị</div>
+    <div style="width: 50%; text-align:center; margin-top: 40px; float: left; color: #fff;">.</div>
+    <div style="width: 50%; text-align:center; margin-top: 40px; float: right; color: #fff;" >.</div>
+    <div class="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  </div>
+</div>
+</div>
+

@@ -1,0 +1,173 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh Sách Công Việc</h4>
+    <div class="row filter-ds">
+      <form class="form-inline" (submit)="submitSearch($event)">
+        <div class="form-group">
+          <label class="" for="startDate">Từ ngày</label>
+          <input id="startDate" type="text"  class="input-write " bsDatepicker [(bsValue)]="startDate" value="{{startDate | date: 'dd/MM/yyyy' }}">
+          <div class="form-group">
+            <label class="" for="endDate">Đến ngày</label>
+            <input id="endDate" type="text"  class="input-write " bsDatepicker  bsDatepicker [(bsValue)]="endDate" value="{{endDate | date: 'dd/MM/yyyy' }}">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-default">Lọc danh sách</button>
+      </form>
+    </div>
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>Mã CT</th>
+        <th>Loại CT</th>
+        <th>Ngày tạo</th>
+        <th>Người tạo</th>
+        <th>Tiếp nhận</th>
+        <th>Trạng thái CT</th>
+        <th>Trạng thái CV</th>
+        <th>Loại công việc</th>
+        <th>Ghi chú</th>
+        <th>Thao tác</th>
+      </tr></thead>
+      <tbody>
+      <tr ng-repeat="item in data" class="ng-scope" *ngFor="let item of congviec; let i = index">
+        <td class="ng-binding">{{item.doi_tuong_id}}</td>
+        <td class="ng-binding">{{loai_chung_tu_cv[item.doi_tuong]}}</td>
+        <td class="ng-binding">{{item.created_at | date: 'dd/MM/yyyy'}}</td>
+        <td class="ng-binding">{{item.ten_nguoi_tao}}</td>
+        <td class="ng-binding">{{item.ben_nhan}}</td>
+        <td class="ng-binding">
+          <span *ngIf="item.doi_tuong == 2">
+            {{status_psc[item.trang_thai]}}
+          </span>
+          <span *ngIf="item.doi_tuong == 1">
+            {{status_phieu_de_nghi_lk[item.trang_thai]}}
+          </span>
+
+
+        </td>
+        <td class="ng-binding">{{trang_thai_cv[item.hoan_thanh]}}</td>
+        <td class="ng-binding">{{loai_cong_viec[item.loai_cong_viec]}}</td>
+
+        <td class="ng-binding">{{item.ghi_chu}}</td>
+
+        <td class="ng-binding">
+           <!--Phân công PBH-->
+            <button type="button" *ngIf="item.loai_cong_viec == 1 && item.hoan_thanh == 0" type="button" (click)="openPhanCong(i)" class="btn btn-primary"
+               data-toggle="modal" data-target="#phan_cong_pbh" >
+           <i class="fa fa-child"></i> {{loai_cong_viec[item.loai_cong_viec]}}
+          </button>
+            <span *ngIf="item.loai_cong_viec == 1 && item.hoan_thanh == 1"><i class="fa fa-check"></i> Đã phân công</span>
+
+          <!--Chi tiết PBH-->
+
+          <a *ngIf="item.loai_cong_viec == 2 || item.loai_cong_viec == 3" class="btn btn-primary" href="javascript:void(0)" routerLink="/dashboard/tao-phieu-sua-chua" [queryParams]="{ id: item.doi_tuong_id }">
+            <i class="fa fa-file-alt"></i> Chi tiết PBH
+          </a>
+
+          <!--Chuyển yêu cầu LK đến kế toán-->
+
+          <a *ngIf="item.loai_cong_viec == 4 && item.hoan_thanh == 0" class="btn btn-primary" routerLink="/dashboard/don-de-nghi-cap-vat-tu" [queryParams]="{ id: item.doi_tuong_id }">
+            <i class="fa fa-file-alt"></i> Xác nhận đề nghị
+          </a>
+          <span *ngIf="item.loai_cong_viec == 4 && item.hoan_thanh == 1"><i class="fa fa-check"></i> Đã xác nhận</span>
+
+          <!--Xu-ly-phieu-de-nghi-->
+          <!--<button type="button" *ngIf="item.loai_cong_viec == 5 && item.hoan_thanh == 0" class="btn btn-primary" (click)="openPDN(i)" data-toggle="modal" data-target="#add_edit_lk">-->
+            <!--<i class="fa fa-file-alt"></i> Chi tiết PĐN-->
+          <!--</button>-->
+
+          <a href="javascript:void(0)" routerLink="/dashboard/don-de-nghi-cap-vat-tu" [queryParams]="{ id: item.doi_tuong_id }" *ngIf="item.loai_cong_viec == 5" class="btn btn-primary" >
+            <i class="fa fa-file-alt"></i> Chi tiết PĐN
+          </a>
+
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" *ngIf="total_page.length >1">
+      <li class="page-item" *ngIf="page >1"><a class="page-link" href="javascript:void(0)" (click)="show_page(page-1)">Previous</a></li>
+      <li class="page-item" *ngFor="let p of total_page"><a class="page-link" href="javascript:void(0)" (click)="show_page(p)">{{p}}</a></li>
+      <li class="page-item"  *ngIf="page < pages"><a class="page-link" href="javascript:void(0)" (click)="show_page(page+1)">Next</a></li>
+    </ul>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="add_edit_lk" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Phiếu đề nghị cấp vật tư</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form>
+
+        <div class="modal-body">
+          <app-dncvt *ngIf="openPDNLK" (onEditItem)="congviec[editPDNIndex]=$event"  [de_nghi_id]="phieu_de_nghi_id" [tram_id]="tram_bao_hanh_id" ></app-dncvt>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="xac_nhan_de_nghi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận đề nghị cấp linh kiện</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="xacnhanPDNForm" (submit)="onSubmitXNPDN($event)" >
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Ghi chú:</label>
+            <textarea class="form-control" formControlName="ghi_chu"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="phan_cong_pbh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Phân công phiếu bảo hành</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="phanCongForm" (submit)="onSubmitPC($event)" >
+      <div class="modal-body">
+        <div class="form-group" *ngIf="NVBH">
+            <label class="col-form-label">Danh sách NVBH:</label>
+          <select2 [width]="300" [options]="options_nvbh" (valueChanged)="onChangeValue($event,'nvbh')">
+              <option>Lựa chọn nhân viên bảo hành</option>
+            <option *ngFor="let item of NVBH; let i = index" value="{{item.id}}">{{item.name}}</option>
+          </select2>
+
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Ghi chú:</label>
+            <textarea class="form-control" id="message-text" formControlName="ghi_chu"></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Chấp nhận</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

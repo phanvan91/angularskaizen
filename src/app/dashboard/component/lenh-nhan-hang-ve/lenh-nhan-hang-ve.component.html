@@ -1,0 +1,230 @@
+<div class="wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="title">
+        <h4>Lệnh nhận hàng về</h4>
+        <p>Ngày tạo phiếu : {{ ngaytaophieu | date: 'dd/MM/yyyy'}}</p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label>Người đề nghị : </label>
+      <span>{{ userinfo?userinfo.name:'' }}</span>
+    </div>
+    <div class="col-md-6">
+      <div class="content-right">
+        <span class="both">Bộ phận:</span> <span>{{ bophan?bophan.ten_loai:'' }}</span>
+      </div>
+    </div>
+    <br><br>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Nhận hàng từ : </label>
+        <select [(ngModel)]="locNhanHang" (change)="locNhanHangChange()">
+          <option value="1">Khách hàng</option>
+          <option value="2">Trạm BH</option>
+          <option value="3">Trung tâm BH</option>
+        </select>
+      </div>
+      <div class="form-group">
+          <select2 [width]="200" [options]="options_kh" *ngIf="openFilterNhanHang&&locNhanHang==1" (valueChanged)="onChangeNhanHang($event,0)">
+          </select2>
+          <select2 [width]="200" [options]="options_tram" *ngIf="openFilterNhanHang&&locNhanHang==2" (valueChanged)="onChangeNhanHang($event,1)">
+          </select2>
+          <select2 [width]="200" [options]="options_tTbh" *ngIf="openFilterNhanHang&&locNhanHang==3" (valueChanged)="onChangeNhanHang($event,2)">
+          </select2>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="content-right">
+        <span class="both">Điện thoại :</span> <span>{{lenhNhanHang.nhan_hang.sdt}}</span> <br>
+        <span class="both">Địa chỉ nhận hàng : </span> <span>{{lenhNhanHang.nhan_hang.dia_chi}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Giao hàng tại :</label>
+        <select [(ngModel)]="locGiaoHang" (change)="locGiaoHangChange()">
+          <option value="1">Khách hàng</option>
+          <option value="2">Trạm BH</option>
+          <option value="3">Trung tâm BH</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select2 [width]="200" [options]="options_kh" *ngIf="openFilterGiaoHang&&locGiaoHang == 1" (valueChanged)="onChangeGiaoHang($event,0)">
+        </select2>
+        <select2 [width]="200" [options]="options_tram" *ngIf="openFilterGiaoHang&&locGiaoHang == 2" (valueChanged)="onChangeGiaoHang($event,1)">
+        </select2>
+        <select2 [width]="200" [options]="options_tTbh" *ngIf="openFilterGiaoHang&&locGiaoHang == 3" (valueChanged)="onChangeGiaoHang($event,2)">
+        </select2>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="content-right">
+        <span class="both">Điện thoại :</span> <span>{{lenhNhanHang.giao_hang.sdt}}</span> <br>
+        <span class="both">Địa chỉ giao hàng : </span> <span>{{lenhNhanHang.giao_hang.dia_chi}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+        <div class="form-group text-are">
+          <label style="width: 70px">Lý do :</label>
+          <input type="text" class="input-write" name="" value="" [(ngModel)] = "lenhNhanHang.lydo">
+        </div>
+      </div>
+  </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Tìm kiếm số serial: </label><br>
+          <select2 [width]="200" [options]="options_serial" (valueChanged)="onChangeSerial($event)">
+          </select2>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="content-right">
+          <div class="form-group">
+            <label style="display: block;">Số lượng: </label>
+            <input class="input-write" style="width: 100px; padding: 0px 5px;" type="number" value="1" [(ngModel)] = "chiTietNhanHang.soluong">
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group text-are">
+          <label style="width: 70px">Ghi chú :</label>
+          <input type="text" class="input-write" name="" value="" [(ngModel)] = "chiTietNhanHang.ghi_chu">
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-secondary" style="margin: 0px auto; display: block; margin-bottom: 20px;" (click)="addToList()">Thêm Vào danh sách</button>
+        <table class="table table-hover table-bordered">
+          <thead>
+            <th>Stt</th>
+            <th>Tên hàng hóa</th>
+            <th>Số lượng</th>
+            <th>Ghi chú</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lenhNhanHang.chi_tiet; let i = index" >
+              <td>{{i+1}}</td>
+              <td>{{item.ten}}</td>
+              <td>{{item.solg}}</td>
+              <td>{{item.ghi_chu}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div style="width: 175px; margin: 0px auto;">
+            <button type="button" class="btn btn-primary" (click)="Onprint()"><i class="fa fa-print" aria-hidden="true"></i>
+              Print</button>
+            <button class="btn btn-default" style="color: blue; border: 1px solid blue;" (click) = "convertDocx()"><i class="fa fa-file-word-o" aria-hidden="true"></i>
+              Word</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
+
+
+
+
+<div id="order-print" style="display: none">
+  <div class="img">
+    <img src="../../assets/images/logo.jpg" width="200px" alt="">
+  </div>
+  <!-- <div class="order-header">
+    <div class="title">world</div>
+    <div>
+      world
+    </div>
+  </div> -->
+
+  <div class="order-body">
+    <div class="title" style="font-size:30px">Lệnh nhận hàng về</div>
+    <div class="order-time">Ngày {{ngayTaoPhieuStr.date}} tháng {{ngayTaoPhieuStr.month}} năm {{ngayTaoPhieuStr.year}}</div>
+    <div class="order-info">
+      <div style="clear: both">
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Họ tên người đề nghị:</label>
+              <div class="dot-inline">&emsp; {{ userinfo?userinfo.name:'' }}</div>
+          </div>
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Bộ phận:</label>
+              <div class="dot-inline">&emsp; </div>
+          </div>
+      </div>
+      <div style="clear: both">
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Nhận hàng từ:</label>
+              <div class="dot-inline" *ngIf="lenhNhanHang.nhan_hang.from" >&emsp; {{lenhNhanHang.nhan_hang.from.ten}}</div>
+          </div>
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Điện Thoại:</label>
+              <div class="dot-inline">&emsp; {{lenhNhanHang.nhan_hang.sdt}}</div>
+          </div>
+      </div>
+
+      <div style="padding-top:10px">
+        <label>Địa chỉ nhận hàng:</label>
+        <div class="dot-inline">&emsp; {{lenhNhanHang.nhan_hang.dia_chi}}</div>
+      </div>
+
+      <div style="clear: both">
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Giao hàng tại:</label>
+              <div class="dot-inline" *ngIf="lenhNhanHang.giao_hang.to" >&emsp; {{lenhNhanHang.giao_hang.to.ten}}</div>
+          </div>
+          <div style="padding-top:10px; width: 50%; float: left">
+              <label>Điện Thoại:</label>
+              <div class="dot-inline">&emsp; {{lenhNhanHang.giao_hang.sdt}}</div>
+          </div>
+      </div>
+
+      <div style="padding-top:10px">
+        <label>Lý do:</label>
+        <div class="dot-inline">&emsp; {{lenhNhanHang.lydo}}</div>
+      </div>
+    </div>
+    <div class="order-detail">
+      <table>
+        <tr>
+          <th class="text center">STT</th>
+          <th style="width: 25%;">Tên hàng hóa</th>
+          <th class="text center">số lượng</th>
+          <th class="text center">Ghi chú</th>
+        </tr>
+        <tr *ngFor="let item of lenhNhanHang.chi_tiet; let i = index" >
+            <td>{{i+1}}</td>
+            <td>{{item.ten}}</td>
+            <td>{{item.solg}}</td>
+            <td>{{item.ghi_chu}}</td>
+          </tr>
+      </table>
+    </div>
+  </div>
+  <div class="order-footer">
+    <div class="row">
+      <div style="width: 50%; text-align:center; float: left; color: #fff;">.</div>
+      <div style="width: 50%; text-align:center; float: right">Ngày {{ngayTaoPhieuStr.date}} tháng {{ngayTaoPhieuStr.month}} năm {{ngayTaoPhieuStr.year}}</div>
+      <div class="col">Trưởng bộ phận</div>
+      <div class="col">Người đề nghị</div>
+      <div style="width: 50%; text-align:center; margin-top: 40px; float: left; color: #fff;">.</div>
+      <div style="width: 50%; text-align:center; margin-top: 40px; float: right; color: #fff;" >.</div>
+      <div class="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    </div>
+  </div>
+</div>

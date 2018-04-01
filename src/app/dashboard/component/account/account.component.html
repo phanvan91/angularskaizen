@@ -1,0 +1,132 @@
+<div class="content">
+  <h4 class="text-center">Tài khoản cá nhân</h4>
+  <form id="formUser" class="form-account col-md-6" [formGroup]="userForm" (submit)="updateAccount($event)">
+    <div class="form-group row">
+      <label for="text-input" class="col-md-3 col-form-label">Email</label>
+      <div class="col-md-9">
+        <input class="form-control" type="text" id="text-input" formControlName="email">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="name-input" class="col-md-3 col-form-label">Tên</label>
+      <div class="col-md-9">
+        <input class="form-control" type="text" id="name-input" formControlName="name">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="email-input" class="col-md-3 col-form-label">Điện thoại</label>
+      <div class="col-md-9">
+        <input class="form-control" type="text" id="sdt-input" formControlName="dien_thoai">
+        <a style=" position: absolute; right: -80px; top: 4px;" data-toggle="modal" data-target="#ask_info"><i class="fa fa-exchange" aria-hidden="true"></i> <small>Thay đổi</small></a>
+      </div>
+    </div> 
+    <div class="form-group row">
+      <label for="url-input" class="col-md-3 col-form-label">Phân loại</label>
+      <div class="col-md-9">
+        <input class="form-control" type="url" id="url-input"
+               *ngIf="loaiNguoiDungs.length"
+               [value]="loaiNguoiDungMap[userForm.get('loai_nguoi_dung_id').value].ten_loai" disabled>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="tel-input" class="col-md-3 col-form-label">Trung tâm</label>
+      <div class="col-md-9">
+        <input class="form-control" type="text" id="tel-input"
+               *ngIf="ttbhMap && userForm.get('trung_tam_bao_hanh_id').value"
+               [value]="ttbhMap[userForm.get('trung_tam_bao_hanh_id').value].ten" disabled>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 col-form-label">Trạm</label>
+      <div class="col-md-9">
+        <input class="form-control" type="text"
+               *ngIf="tbhMap && userForm.get('tram_bao_hanh_id').value"
+               [value]="tbhMap[userForm.get('tram_bao_hanh_id').value].ten"
+               disabled>
+      </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label">Mật khẩu</label>
+        <div class="col-md-9">
+          <input class="form-control" type="password" value="*********" readonly>
+          <a style=" position: absolute; right: -80px; top: 4px;" data-toggle="modal" data-target="#pass_info"><i class="fa fa-exchange" aria-hidden="true"></i> <small>Thay đổi</small></a>
+        </div>
+      </div>
+    <!-- <div class="form-group row">
+      <label class="col-md-3 col-form-label">Mật khẩu cũ</label>
+      <div class="col-md-9">
+        <input class="form-control" type="password" formControlName="password">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 col-form-label">Mật khẩu mới</label>
+      <div class="col-md-9">
+        <input class="form-control" type="password" formControlName="new_password">
+      </div>
+    </div> -->
+
+    <div class="form-group row">
+      <label class="col-md-3 col-form-label"></label>
+      <div class="col-md-9">
+        <!-- <input class="form-control" type="password" formControlName="confirm_password"> -->
+      </div>
+    </div>
+
+  </form>
+
+  <div class="modal fade" id="ask_info" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Đồng ý thay đổi?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="updateAccount()">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="modal fade" id="pass_info" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Thay đổi mật khẩu</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            
+            <div class="form-group row">
+            <label class="col-md-3 col-form-label">Mật khẩu cũ</label>
+              <div class="col-md-9">
+                <input class="form-control" type="password" (change) = "setPass($event,'old')">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label">Mật khẩu mới</label>
+              <div class="col-md-9">
+                <input class="form-control " type="password" (change) = "setPass($event,'new')">
+              </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">Xác nhận mật khẩu</label>
+                <div class="col-md-9">
+                  <input class="form-control {{isNotConfirm?'ng-invalid':''}}" type="password" (change) = "setPass($event,'confirm')">
+                  <div class="errors" role="alert" *ngIf="isNotConfirm" >
+                      Xác nhận mật khẩu phải trùng khớp
+                    </div>
+                </div>
+                
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="updateAccount()">OK</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+

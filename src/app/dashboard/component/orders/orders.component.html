@@ -1,0 +1,82 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Danh sách đơn hàng</h4>
+    <div class="row filter-ds">
+      <form class="form-inline">
+        <div class="form-group">
+          <label class="" for="startDate">Từ ngày</label>
+          <input type="text" class="input-write" id="startDate" bsDatepicker [(bsValue)]="searchForm.ngay_bat_dau"
+                placeholder="Start date" value="{{searchForm.ngay_bat_dau | date: 'dd/MM/yyyy' }}">
+          <label class="" for="endDate">Đến ngày</label>
+          <input type="text" class="input-write" id="endDate" bsDatepicker [(bsValue)]="searchForm.ngay_ket_thuc"
+                placeholder="End date" value="{{searchForm.ngay_ket_thuc | date: 'dd/MM/yyyy' }}">
+        </div>
+        <button (click)="onSearchData()" class="btn btn-primary" style="margin-left: 20px;"><i class="fa fa-search"></i> Tìm kiếm</button>
+      </form>
+    </div>
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Ngày đặt hàng</th>
+          <th>Ngày nhận hàng</th>
+          <th>Số chứng từ</th>
+          <th>Lý do</th>
+          <th>Trung tâm bảo hành</th>
+          <th>Người đặt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of donDatHangList; let i=index"  (dblclick)="openOrder(item.id)">
+          <td>{{i+1}}</td>
+          <td>{{item.ngay_dat_hang | dateTime}}</td>
+          <td>{{item.ngay_nhan_hang | dateTime}}</td>
+          <td>{{item.so_ct}}</td>
+          <td>{{item.ly_do}}</td>
+          <td>{{item.tenTrungTamBH}}</td>
+          <td>{{item.tenUser}}</td>
+        </tr>
+        <tr *ngIf="donDatHangList&&!donDatHangList.length">
+          <td colspan="7" style="text-align:center">
+            Không tìm thấy kết quả
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul class="pagination" *ngIf="donDatHangPaginationObj&&donDatHangList.length">
+        <li class="page-item"><a class="page-link" (click)="goToPageFirst()">Đầu tiên</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPagePrev()">Trước</a></li>
+      <li class="page-item"><a class="page-link" >{{donDatHangPaginationObj.current_page}}</a></li>
+      <li class="page-item" *ngIf="donDatHangPaginationObj.current_page<donDatHangPaginationObj.last_page">
+        <a class="page-link" (click)="goToPageNext()">{{donDatHangPaginationObj.current_page+1| number}}</a>
+      </li>
+      <li class="page-item" *ngIf="donDatHangPaginationObj.current_page<donDatHangPaginationObj.last_page">
+        <a class="page-link" >...</a>
+      </li>
+      <li class="page-item" *ngIf="donDatHangPaginationObj.current_page<donDatHangPaginationObj.last_page">
+        <a class="page-link" (click)="goToPageLast()">{{donDatHangPaginationObj.last_page}}</a>
+      </li>
+      <li class="page-item"><a class="page-link" (click)="goToPageNext()">Tiếp</a></li>
+      <li class="page-item"><a class="page-link" (click)="goToPageLast()">Cuối cùng</a></li>
+    </ul>
+
+    <div class="modal fade" id="delete_document" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes</button>
+
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>

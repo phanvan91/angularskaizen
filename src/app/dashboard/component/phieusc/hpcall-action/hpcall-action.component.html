@@ -1,0 +1,104 @@
+<form role="form" (submit)="hpCallSubmit($event)">
+
+  <div class="modal-body">
+    <div class="container">
+      <div class="group-cau-hoi" *ngFor="let item_cauhoi of cauhoi; let a = index">
+        <div class="row">
+          <div class="col-12">
+            <b>Câu {{a +1}}:</b> {{item_cauhoi.cau_hoi}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12" *ngIf="item_cauhoi.loai==1;else other_content">
+
+            <!-- Checkbox 1-->
+            <div class="checkbox checkbox-primary" *ngIf="item_cauhoi.cau_tra_loi==1;else other_tra_loi_1" >
+              <input checked id="check-1-checked-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}" class="w3-input w3-animate-input myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+              <label for="check-1-checked-{{item_cauhoi.id}}">
+                Hài lòng
+              </label>
+            </div>
+            <ng-template #other_tra_loi_1>
+              <div class="checkbox checkbox-primary">
+                <input id="check-1-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}" class="w3-input w3-animate-input myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                <label for="check-1-{{item_cauhoi.id}}">
+                  Hài lòng
+                </label>
+              </div>
+            </ng-template>
+
+            <!-- Checkbox 2-->
+
+            <div class="checkbox checkbox-primary" *ngIf="item_cauhoi.cau_tra_loi==2;else other_tra_loi_2" >
+              <input checked id="check-2-checked-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="w3-input w3-animate-input myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+              <label for="check-2-checked-{{item_cauhoi.id}}">
+                Không hài lòng
+              </label>
+            </div>
+            <ng-template #other_tra_loi_2>
+              <div class="checkbox checkbox-primary">
+                <input id="check-2-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                <label for="check-2-checked-{{item_cauhoi.id}}">
+                  Không hài lòng
+                </label>
+              </div>
+            </ng-template>
+
+            <!-- Checkbox 3-->
+
+            <div class="checkbox checkbox-primary" *ngIf="item_cauhoi.cau_tra_loi==3;else other_tra_loi_3" >
+              <input checked id="check-3-checked-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+              <label for="check-3-{{item_cauhoi.id}}">
+                Bình thường
+              </label>
+            </div>
+            <ng-template #other_tra_loi_3>
+              <div class="checkbox checkbox-primary">
+                <input id="check-3-{{item_cauhoi.id}}" type="checkbox" value="{{item_cauhoi.id}}"  class="myCheckbox-{{item_cauhoi.id}}" (click)="selectOnlyThis($event)">
+                <label for="check-3-{{item_cauhoi.id}}">
+                  Bình thường
+                </label>
+              </div>
+            </ng-template>
+            <!-- Checkbox 4-->
+
+            <div class="checkbox checkbox-primary" *ngIf="item_cauhoi.cau_tra_loi!=1 && item_cauhoi.cau_tra_loi!=2 && item_cauhoi.cau_tra_loi!=3 && item_cauhoi.cau_tra_loi;else other_tra_loi_4">
+              <input checked (change)="show_box($event)" value="{{item_cauhoi.id}}" id="check-4-{{item_cauhoi.id}}" class="myCheckbox-{{item_cauhoi.id}}" type="checkbox" (click)="selectOnlyThis($event)">
+              <label for="check-4-{{item_cauhoi.id}}">
+                Ý kiến khác
+              </label>
+
+            </div>
+            <ng-template #other_tra_loi_4>
+              <div class="checkbox checkbox-primary">
+                <input (change)="show_box($event)" value="{{item_cauhoi.id}}" id="check-4-checked-{{item_cauhoi.id}}" class="myCheckbox-{{item_cauhoi.id}}" type="checkbox" (click)="selectOnlyThis($event)">
+                <label for="check-4-{{item_cauhoi.id}}">
+                  Ý kiến khác
+                </label>
+
+              </div>
+            </ng-template>
+            <textarea style="display: block;" rows="1" id="note-hpcall-{{item_cauhoi.id}}" class="note-hpcall" placeholder="Nhập ý kiến của khách hàng" *ngIf="item_cauhoi.cau_tra_loi!=1 && item_cauhoi.cau_tra_loi!=2 && item_cauhoi.cau_tra_loi!=3 && item_cauhoi.cau_tra_loi;else other_textarea_4">{{item_cauhoi.cau_tra_loi}}</textarea>
+            <ng-template #other_textarea_4>
+
+              <textarea rows="1" id="note-hpcall-{{item_cauhoi.id}}" class="note-hpcall" placeholder="Nhập ý kiến của khách hàng"></textarea>
+            </ng-template>
+          </div>
+
+          <ng-template #other_content>
+            <div class="col-12">
+              <textarea id="cautraloi-{{item_cauhoi.id}}" rows="1" placeholder="Nhập câu trả lời của khách hàng">{{item_cauhoi.cau_tra_loi}}</textarea>
+
+            </div>
+          </ng-template>
+        </div>
+        <hr>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal footer -->
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+  </div>
+</form>

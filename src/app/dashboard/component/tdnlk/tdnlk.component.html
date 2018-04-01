@@ -1,0 +1,104 @@
+<div class="content">
+  <div class="app-227">
+    <h4 class="title-app">Theo dõi nợ linh kiện</h4>
+    <div class="row filter-ds">
+      <form style="width: 100%;" (submit)="search($event)">
+        <div class="form-group">
+          <label class="" for="startDate">Từ ngày</label>
+          <input type="text" class="input-write" id="startDate" bsDatepicker [(bsValue)]="startDate"
+          placeholder="Start date" value="{{startDate | date: 'dd/MM/yyyy' }}">
+          <label class="" for="endDate">Đến ngày</label>
+          <input type="text" class="input-write" id="endDate" bsDatepicker [(bsValue)]="endDate"
+          placeholder="End date" value="{{endDate | date: 'dd/MM/yyyy' }}">
+        </div>
+        <div class="form-group">
+          <label class="" for="startDate">Trạm</label>
+          <select2 [width]="200" [options]="optionTram" (valueChanged)="changeTram($event)">
+              <option *ngIf="data_tram_map">{{data_tram_map.ten}}</option>
+          </select2>
+          
+          <label class="" for="startDate">Nhân viên</label>
+          <select2 [width]="200" [options]="optionsNhanVien" (valueChanged)="changeNhanVien($event)">
+            <option *ngIf="data_nhanvien_map">{{data_nhanvien_map.ten}}</option>
+          </select2>
+
+          <label class="" for="startDate">Số phiếu</label>
+          <input type="number" class="input-write" [(ngModel)]="searchForm.so_phieu" [ngModelOptions]="{standalone: true}">
+
+          <label class="" for="startDate">Trạng thái</label>
+          <select class="input-write" [(ngModel)]="searchForm.trang_thai" [ngModelOptions]="{standalone: true}">
+            <option >- Lựa chọn -</option>
+            <option value="0">Chưa trả xác</option>
+            <option value="1">Đã trả xác</option>
+          </select>
+          <button class="btn btn-primary float-right" style="margin-left: 20px;"><i class="fa fa-search"></i> Lọc danh sách</button>
+
+        </div>
+      </form>
+    </div>
+
+    <table class="table table-condensed table-hover ng-scope">
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Nhân viên BH</th>
+        <th>Phiếu bảo hành</th>
+        <th>Linh kiện cấp</th>
+        <th>Số lượng</th>
+        <th>Linh kiện thu hồi</th>
+        <th>Số lượng thu</th>
+        <th>Ghi chú</th>
+        <th>Tình trạng</th>
+        <th style="width: 150px;">
+        </th>
+      </tr></thead>
+      <tbody>
+        <tr *ngFor="let item of listNoLinhKienXac; let i=index"
+          class="{{item.so_luong_thu>0&&item.so_luong_thu<item.so_luong_cap?'warning':''}}"
+        >
+          <td>{{i+1}}</td>
+          <td>{{item.user.name}}</td>
+          <td><a class="btn-mini" (click)="openPhieuSuaChua(item.phieu_sua_chua_id)">{{item.phieu_sua_chua_id}}</a></td>
+          <td>{{'[' + item.linh_kien_cap.ma+']'+item.linh_kien_cap.ten}}</td>
+          <td><b>{{item.so_luong_cap}}</b></td>
+          <td>{{'[' +item.linh_kien_thu_hoi.ma+']'+item.linh_kien_thu_hoi.ten}}</td>
+          <td><b>{{item.so_luong_thu}}</b></td>
+          <td>{{item.ghi_chu}}</td>
+          <td>{{item.trang_thai?'Đã trả xác':'Chưa trả xác'}}</td>
+          <td>
+            <div *ngIf="item.trang_thai != 2">
+              <a title="Sửa" class="btn-mini gray" *ngIf="(item.trang_thai != 3)" data-toggle="modal" data-target="#edit_no_lk" (click)="openEdit(i)">Sửa</a>
+              <a (click)="nhanDoiLinhKien(i)" *ngIf="!item.hoan_thanh_tra_xac" title="Trả xác" class="btn-mini">Trả xác</a>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="listNoLinhKienXac&&listNoLinhKienXac.length==0">
+          <td colspan="10" style="text-align:center">Không tìm thấy kết quả</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="modal fade" id="edit_no_lk" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Số lượng</label>
+                <input type="number" class="input-write" [(ngModel)]="noLinhKienEditObj.so_luong">
+              </div>
+              <div class="form-group">
+                <label>Ghi chú</label><br>
+                <textarea style="width: 100%" [(ngModel)]="noLinhKienEditObj.ghi_chu"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="edit()">OK</button>
+  
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+

@@ -1,0 +1,42 @@
+<header>
+  <!-- <input type="text" placeholder="Tìm kiếm"> -->
+  <ul class="nav" style="right: auto">
+    <li><a href="javascript:void(0)" class="none"> Kho</a></li>
+    <li>
+      <a href="javascript:void(0)" *ngIf="openListTTBH" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-archive" aria-hidden="true"></i> {{tramBHSelected?tramBHSelected:'Trung tâm bảo hành'}}</a>
+      <a href="javascript:void(0)" *ngIf="!openListTTBH"    aria-haspopup="true" aria-expanded="false"><i class="fa fa-archive" aria-hidden="true"></i> {{tramBHSelected?tramBHSelected:'Trung tâm bảo hành'}}</a>
+
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="padding: 0px" *ngIf="userInfo" >
+         <div *ngFor="let item of trungTamBaoHanh;" > 
+          <a class="top-list"  (click)="onSelectTTBH(item,1)" href="javascript:void(0)" 
+              *ngIf="(userInfo.trung_tam_bao_hanh_id && userInfo.trung_tam_bao_hanh_id == item.id) || (!userInfo.trung_tam_bao_hanh_id)" > {{item.ten}}</a>
+          <ul *ngIf="item.tram_bao_hanh &&
+              ((userInfo.trung_tam_bao_hanh_id && userInfo.trung_tam_bao_hanh_id == item.id) || (!userInfo.trung_tam_bao_hanh_id))" class="droplist" >
+            <li *ngFor="let tram of item.tram_bao_hanh;">
+              <a href="javascript:void(0)" title="{{tram.ten}}" (click)="onSelectTTBH(tram,2)">{{tram.ten}}</a>
+            </li>
+          </ul>
+          </div>
+      </div>
+    </li>
+  </ul>
+  <div class="container">
+    <div class="form-search">
+      <form (submit)="getSearchSerial($event)">
+        <input type="text" placeholder="Nhập số Serial" class="form-control" [(ngModel)]="serialSearch" [ngModelOptions]="{standalone: true}">
+        <button><i class="fa fa-search" aria-hidden="true"></i></button>
+      </form>
+    </div>
+  </div>
+  <ul class="nav">
+    <li><a href="javascript:void(0)" routerLink="danh-sach-cong-viec" > DS CV của tôi</a></li>
+    <li><a href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user" ></i> {{userInfo?userInfo.name:'Account'}}</a>
+      <div id="logout-field" class="dropdown-menu" style="padding: 0px;">
+         <a class="top-list" routerLink="account"  href="javascript:void(0)"><i class="fa fa-info" aria-hidden="true"></i>
+          Thông tin</a>
+         <a class="top-list" (click)="logOut()"  href="javascript:void(0)"><i class="fa fa-sign-out" aria-hidden="true"></i>
+          Đăng xuất</a>
+      </div>
+    </li>
+  </ul>
+</header>

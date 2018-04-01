@@ -1,0 +1,137 @@
+<div class="modal fade" id="edit_serial">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Sửa Serial</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form  [formGroup]="serialEditForm" (submit)="onEditSubmit($event)">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Serial:</label>
+              </div>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="edit_id_serial" formControlName="serial">
+                <span class="errors" *ngIf="serialEditForm.get('serial').invalid && serialEditForm.get('serial').touched">Vui lòng nhập serial</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Trạng thái:</label>
+              </div>
+              <div class="col-sm-8">
+                <select name="status" class="list_product" class="form-control" formControlName="trang_thai" [class.is-invalid]="serialEditForm.get('trang_thai').value == 'null'">
+                  <option [value]="null">Lựa chọn trạng thái</option>
+                  <option *ngFor="let status of status_serial; let i = index;"
+                          [value]="i+1">{{status[i+1]}}</option>
+                </select>
+                <ng-container *ngIf="serialEditForm.get('trang_thai').value === 'null' ">
+                  <span class="errors" *ngIf="serialEditForm.get('trang_thai')">Vui lòng nhập trạng thái</span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="serial" class="form-group">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Ngành hàng:</label>
+              </div>
+              <div class="col-sm-8">
+                <select2 [width]="280" (valueChanged)="changeNganh($event)">
+                  <option >{{serial.ten_nganh}}</option>
+                  <option *ngFor="let nganh of NganhHang"
+                          [value]="nganh.id">{{nganh.ten}}</option>
+                </select2>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="serial" class="form-group">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Nhóm sản phẩm:</label>
+              </div>
+              <div class="col-sm-8">
+                <select2 [width]="280" (valueChanged)="changeProduct($event)">
+                  <option>{{serial.ten_sp}}</option>
+
+                  <option *ngFor="let sp of SanPham"
+                          [value]="sp.id">{{sp.ten}}</option>
+                </select2>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="serial" class="form-group">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Model:</label>
+              </div>
+              <div class="col-sm-8">
+                <select2 [width]="280" (valueChanged)="changeModel($event)">
+                  <option>{{serial.ten_model}}</option>
+
+                  <option *ngFor="let model of Model"
+                          [value]="model.id">{{model.ten}}</option>
+                </select2>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label>Ngày sản xuất:</label>
+
+            <!--<input id="date_sx" type="date" class="form-control" name="date_sk" formControlName="ngay_san_xuat">-->
+            <input id="ngay_san_xuat" type="text"  class="input-write " [bsConfig]="bsConfig" bsDatepicker  bsDatepicker [(bsValue)]="ngay_san_xuat" value="{{ngay_san_xuat | date: 'dd/MM/yyyy' }}" >
+          </div>
+          <div class="form-group">
+            <label>Ngày xuất kho:</label>
+            <input id="ngay_xuat_kho" type="text"  class="input-write " [bsConfig]="bsConfig" bsDatepicker  bsDatepicker [(bsValue)]="ngay_xuat_kho" value="{{ngay_xuat_kho | date: 'dd/MM/yyyy' }}" >
+
+            <!--<input id="date_xk" type="date" class="form-control" name="date_xk" formControlName="ngay_xuat_kho">-->
+          </div>
+          <div class="form-group">
+            <label>Ngày kích hoạt bảo hành:</label>
+            <input id="ngay_kich_hoat_bh" type="text"  class="input-write " [bsConfig]="bsConfig" bsDatepicker  bsDatepicker [(bsValue)]="ngay_kich_hoat_bh" value="{{ngay_kich_hoat_bh | date: 'dd/MM/yyyy' }}" >
+
+            <!--<input id="date_start" type="date" class="form-control" name="date_start" formControlName="ngay_kich_hoat_bh">-->
+          </div>
+          <div class="form-group">
+            <label>Ngày hết hạn bảo hành:</label>
+            <input id="ngay_het_han" type="text"  class="input-write " [bsConfig]="bsConfig"  bsDatepicker  bsDatepicker [(bsValue)]="ngay_het_han" value="{{ngay_het_han | date: 'dd/MM/yyyy' }}" >
+
+            <!--<input id="date_end" type="date" class="form-control" name="date_end" formControlName="ngay_het_han">-->
+          </div>
+          <div class="form-group">
+            <label>Khách hàng:</label>
+            <select2 [width]="300" [options]="options_kh" (valueChanged)="onChangeValue($event,'khachhang')">
+                <option *ngIf="KhachHang">{{KhachHang.ten}}</option>
+
+            </select2>
+            <div id="add-cus-serial-edit" style="display: none;">
+              <app-customer-create (khachHangAdded)="KhachHang = $event"></app-customer-create>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,33 @@
+.content {
+  width: 100%;
+}
+.pagination{
+  float: right;
+}
+.app-227{
+  margin: 2%;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+.excel input[type=file] {
+  opacity: 1;
+  cursor: inherit;
+  display: none;
+}

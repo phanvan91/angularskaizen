@@ -1,0 +1,71 @@
+<div id="form-add-customer">
+  <form [formGroup]="khachHangCreateForm" (submit)="onCreateKhachHangSubmit($event)">
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Mã khách hàng:</label>
+        <input type="text" class="form-control" formControlName="ma">
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" class="form-control" id="email_customer" formControlName="email">
+      </div>
+      <div class="form-group">
+        <label>Tên KH:</label>
+        <input type="text" class="form-control" id="name_customer" formControlName="ten">
+      </div>
+      <div class="form-group">
+        <label>Số điện thoại:</label>
+        <input type="text" class="form-control" id="sdt" formControlName="dien_thoai">
+      </div>
+      <div class="form-group">
+        <label>Địa chỉ:</label>
+        <input type="text" class="form-control" id="addr" formControlName="dia_chi">
+      </div>
+      <div class="form-group">
+        <label>Tỉnh/ thành phố:</label>
+        <select2 [width]="410" class="form-control" (valueChanged)="changeCity($event)">
+          <option>Lựa chọn tỉnh thành phố</option>
+          <option *ngFor="let c of city"
+                  [value]="c.code">{{c.name}}</option>
+
+        </select2>
+      </div>
+      <div class="form-group">
+        <label>Quận huyện:</label>
+        <select2 [width]="410" class="form-control" (valueChanged)="changeDictrict($event)">
+          <option>Lựa chọn quận huyện</option>
+
+          <option *ngFor="let d of dictrict"
+                  [value]="d.code">{{d.name_with_type}}</option>
+
+        </select2>
+      </div>
+      <div class="form-group">
+        <label>Phường Xã:</label>
+        <select2 [width]="410" class="form-control" (valueChanged)="changeVillage($event)">
+          <option>Lựa chọn phường xã</option>
+
+          <option *ngFor="let v of village"
+                  [value]="v.code">{{v.name_with_type}}</option>
+
+        </select2>
+      </div>
+
+      <div class="form-group">
+        <label>Loại khách hàng:</label>
+        <select formControlName="loai" class="form-control">
+          <option value="null">Lựa chọn loại khách hàng</option>
+          <option value="1">Khách lẻ</option>
+          <option value="2">Khách sỉ</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Tạo mới khách hàng</button>
+    </div>
+  </form>
+</div>

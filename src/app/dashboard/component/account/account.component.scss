@@ -1,0 +1,19 @@
+.content {
+  margin: 2em;
+}
+h4 {
+  margin-bottom: 2em;
+}
+.form-account{
+  margin-left: 20%;
+}
+
+.errors{
+  color: #dc3545;
+  font-size: 90%;
+}
+input.ng-invalid {
+  border-color: #dc3545;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
